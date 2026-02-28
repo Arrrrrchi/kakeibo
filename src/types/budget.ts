@@ -1,6 +1,6 @@
+import type { CycleType } from "@/generated/prisma/enums"
 import type { BudgetCategoryMappingModel } from "@/generated/prisma/models/BudgetCategoryMapping"
 import type { BudgetItemModel } from "@/generated/prisma/models/BudgetItem"
-import type { CycleType } from "@/generated/prisma/enums"
 
 export type BudgetItem = BudgetItemModel
 

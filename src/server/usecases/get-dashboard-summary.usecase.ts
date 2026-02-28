@@ -9,7 +9,7 @@ export class GetDashboardSummaryUsecase {
 	constructor(
 		private readonly transactionRepository: ITransactionRepository,
 		private readonly budgetRepository: IBudgetRepository,
-		private readonly mappingRepository: IMappingRepository,
+		readonly _mappingRepository: IMappingRepository,
 	) {}
 
 	async execute(): Promise<DashboardData> {
@@ -58,9 +58,7 @@ export class GetDashboardSummaryUsecase {
 			}
 		}
 
-		return categoryBreakdown.filter(
-			(c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`),
-		)
+		return categoryBreakdown.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`))
 	}
 
 	private async buildBudgetReport(
