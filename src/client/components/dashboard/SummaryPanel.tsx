@@ -1,11 +1,11 @@
 "use client"
 
-import { formatCurrency, formatCompactCurrency } from "@/client/lib/format"
 import { CategoryPieChart } from "@/client/components/charts/CategoryPieChart"
 import { MonthlyTrendChart } from "@/client/components/charts/MonthlyTrendChart"
 import { StackedBarChart } from "@/client/components/charts/StackedBarChart"
-import { KpiCard } from "@/client/components/ui/KpiCard"
 import { Card } from "@/client/components/ui/Card"
+import { KpiCard } from "@/client/components/ui/KpiCard"
+import { formatCurrency } from "@/client/lib/format"
 import type { DashboardData } from "@/types/dashboard"
 
 type SummaryPanelProps = {
@@ -18,16 +18,8 @@ export function SummaryPanel({ data }: SummaryPanelProps) {
 	return (
 		<div className="space-y-6">
 			<div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-				<KpiCard
-					label="総収入"
-					value={formatCurrency(kpiSummary.totalIncome)}
-					color="green"
-				/>
-				<KpiCard
-					label="総支出"
-					value={formatCurrency(kpiSummary.totalExpense)}
-					color="red"
-				/>
+				<KpiCard label="総収入" value={formatCurrency(kpiSummary.totalIncome)} color="green" />
+				<KpiCard label="総支出" value={formatCurrency(kpiSummary.totalExpense)} color="red" />
 				<KpiCard
 					label="収支差額"
 					value={formatCurrency(kpiSummary.balance)}
