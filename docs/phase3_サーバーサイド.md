@@ -65,7 +65,7 @@ export async function loadDashboardData(): Promise<DashboardData> {
 #### `src/server/actions/import-csv.ts`
 
 - FormData から CSV ファイルを受け取る
-- `parseMoneforwardCsv()` でパース
+- `parseMoneyforwardCsv()` でパース
 - `ImportTransactionsUsecase` で DB に保存
 - 戻り値: `{ success: boolean; importedCount: number; error?: string }`
 
@@ -86,7 +86,7 @@ export async function importCsv(formData: FormData) {
   }
 
   const buffer = Buffer.from(await file.arrayBuffer())
-  const transactions = await parseMoneforwardCsv(buffer)
+  const transactions = await parseMoneyforwardCsv(buffer)
   const importedCount = await usecase.execute(transactions)
 
   revalidatePath("/dashboard")
