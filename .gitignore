@@ -48,7 +48,6 @@ next-env.d.ts
 .vercel
 
 # IDE
-.vscode/
 .idea/
 *.swp
 *.swo
