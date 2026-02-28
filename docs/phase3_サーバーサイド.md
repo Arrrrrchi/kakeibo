@@ -178,7 +178,7 @@ export async function updateMappings(
 
 1. 既存の予算項目が存在するかチェック（冪等性担保）
 2. 予算項目が 0 件の場合のみシードを実行
-3. 設計ドキュメントの 32 項目を `sortOrder` 付きで挿入
+3. 設計ドキュメントの 35 項目を `sortOrder` 付きで挿入
 4. デフォルトマッピングがある項目は `budget_category_mappings` も同時に作成
 
 #### シードデータ構造
@@ -200,7 +200,7 @@ const seedData = [
     sortOrder: 101,
     mappings: [{ majorCategory: "水道・光熱費", minorCategory: "電気代" }],
   },
-  // ... 以下、設計ドキュメントの 32 項目すべて
+  // ... 以下、設計ドキュメントの 35 項目すべて
 ]
 ```
 
@@ -372,8 +372,8 @@ import { describe, it, expect } from "vitest"
 import { seedData } from "../prisma/seed-data"
 
 describe("シードデータ", () => {
-  it("32 項目が定義されている", () => {
-    expect(seedData).toHaveLength(32)
+  it("35 項目が定義されている", () => {
+    expect(seedData).toHaveLength(35)
   })
 
   it("全項目に必須フィールドがある", () => {
@@ -402,16 +402,16 @@ describe("シードデータ", () => {
 
 ## 完了条件
 
-- [ ] `loadDashboardData()` がサーバーコンポーネントから正常に呼び出せる
-- [ ] CSV インポートアクションがファイルアップロード → DB 保存 → 画面更新の一連の流れで動作する
-- [ ] 予算の CRUD アクションが正常に動作する
-- [ ] マッピング更新アクションが正常に動作する
-- [ ] シードスクリプトで 32 項目が正しく投入される
-- [ ] シードスクリプトが冪等（2 回実行しても重複しない）
-- [ ] 全アクションで `revalidatePath` が呼ばれ画面が再描画される
-- [ ] TypeScript 型チェックが通過する
-- [ ] サーバーアクションのバリデーションテストが全て通過する
-- [ ] シードデータの構造テストが通過する
+- [x] `loadDashboardData()` がサーバーコンポーネントから正常に呼び出せる
+- [x] CSV インポートアクションがファイルアップロード → DB 保存 → 画面更新の一連の流れで動作する
+- [x] 予算の CRUD アクションが正常に動作する
+- [x] マッピング更新アクションが正常に動作する
+- [x] シードスクリプトで 35 項目が正しく投入される
+- [x] シードスクリプトが冪等（2 回実行しても重複しない）
+- [x] 全アクションで `revalidatePath` が呼ばれ画面が再描画される
+- [x] TypeScript 型チェックが通過する
+- [x] サーバーアクションのバリデーションテストが全て通過する
+- [x] シードデータの構造テストが通過する
 
 ## 成果物
 
@@ -428,3 +428,6 @@ describe("シードデータ", () => {
 | `prisma/seed-data.ts` | シードデータ定義（テスト対象として分離） |
 | `src/server/actions/upsert-budget.test.ts` | 予算アクションテスト |
 | `src/server/actions/import-csv.test.ts` | CSV インポートアクションテスト |
+| `src/server/loaders/load-dashboard-data.test.ts` | ローダーテスト |
+| `prisma/seed-data.test.ts` | シードデータ構造テスト |
+| `vitest.config.ts` | prisma/ テストの include 追加 |

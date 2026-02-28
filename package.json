@@ -34,9 +34,13 @@
 		"dotenv": "^17.3.1",
 		"jsdom": "^28.1.0",
 		"tailwindcss": "^4",
+		"tsx": "^4.21.0",
 		"typescript": "^5",
 		"vite-tsconfig-paths": "^6.1.1",
 		"vitest": "^4.0.18"
+	},
+	"prisma": {
+		"seed": "tsx prisma/seed.ts"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
