@@ -39,20 +39,22 @@ Next.js 16 プロジェクトの初期化と開発環境の構築を行う。以
 
 ### 1-4. Prisma セットアップ
 
-- Prisma のインストール
+- Prisma 7 のインストール（ドライバーアダプター含む）
   ```bash
-  pnpm add prisma @prisma/client
+  pnpm add prisma @prisma/client @prisma/adapter-pg
   pnpm exec prisma init
   ```
+  - Prisma 7 では `prisma init` で `prisma.config.ts` も生成される
+  - `dotenv` が devDependencies として必要（`prisma.config.ts` で使用）
 - `prisma/schema.prisma` にスキーマ定義
   ```prisma
   generator client {
-    provider = "prisma-client-js"
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
   }
 
   datasource db {
     provider = "postgresql"
-    url      = env("DATABASE_URL")
   }
 
   enum CycleType {
@@ -83,13 +85,13 @@ Next.js 16 プロジェクトの初期化と開発環境の構築を行う。以
   }
 
   model BudgetItem {
-    id            String     @id @default(uuid())
+    id            String    @id @default(uuid())
     name          String
-    monthlyAmount Int        @map("monthly_amount")
-    cycleType     CycleType  @map("cycle_type")
-    sortOrder     Int        @default(0) @map("sort_order")
-    createdAt     DateTime   @default(now()) @map("created_at")
-    updatedAt     DateTime   @updatedAt @map("updated_at")
+    monthlyAmount Int       @map("monthly_amount")
+    cycleType     CycleType @map("cycle_type")
+    sortOrder     Int       @default(0) @map("sort_order")
+    createdAt     DateTime  @default(now()) @map("created_at")
+    updatedAt     DateTime  @updatedAt @map("updated_at")
 
     mappings BudgetCategoryMapping[]
 
@@ -97,11 +99,11 @@ Next.js 16 プロジェクトの初期化と開発環境の構築を行う。以
   }
 
   model BudgetCategoryMapping {
-    id            String     @id @default(uuid())
-    budgetItemId  String     @map("budget_item_id")
-    majorCategory String     @map("major_category")
-    minorCategory String     @map("minor_category")
-    createdAt     DateTime   @default(now()) @map("created_at")
+    id            String   @id @default(uuid())
+    budgetItemId  String   @map("budget_item_id")
+    majorCategory String   @map("major_category")
+    minorCategory String   @map("minor_category")
+    createdAt     DateTime @default(now()) @map("created_at")
 
     budgetItem BudgetItem @relation(fields: [budgetItemId], references: [id], onDelete: Cascade)
 
@@ -109,42 +111,104 @@ Next.js 16 プロジェクトの初期化と開発環境の構築を行う。以
     @@map("budget_category_mappings")
   }
   ```
-- `.env` に `DATABASE_URL` を設定
+  - Prisma 7 の変更点:
+    - provider は `prisma-client`（`prisma-client-js` から変更）
+    - `output` でクライアント生成先を `../src/generated/prisma` に指定
+    - `datasource` に `url` は不要（`prisma.config.ts` で管理）
+- `prisma.config.ts` — Prisma 7 の設定ファイル（`prisma init` で生成）
+  ```typescript
+  import "dotenv/config"
+  import { defineConfig } from "prisma/config"
+
+  export default defineConfig({
+    schema: "prisma/schema.prisma",
+    migrations: {
+      path: "prisma/migrations",
+    },
+    datasource: {
+      url: process.env.DATABASE_URL,
+    },
+  })
   ```
-  DATABASE_URL="postgresql://user:password@localhost:5432/kakeibo?schema=public"
+- `src/server/lib/prisma.ts` — Prisma クライアントシングルトン（ドライバーアダプター使用）
+  ```typescript
+  import { PrismaPg } from "@prisma/adapter-pg"
+  import { PrismaClient } from "@/generated/prisma/client"
+
+  const globalForPrisma = globalThis as unknown as {
+    prisma: PrismaClient | undefined
+  }
+
+  function createPrismaClient(): PrismaClient {
+    const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL })
+    return new PrismaClient({ adapter })
+  }
+
+  export const prisma = globalForPrisma.prisma ?? createPrismaClient()
+
+  if (process.env.NODE_ENV !== "production") {
+    globalForPrisma.prisma = prisma
+  }
   ```
-- 初回マイグレーション実行
+  - Prisma 7 ではドライバーアダプター（`@prisma/adapter-pg`）が必須
+  - import パスは `@/generated/prisma/client`（index ファイルがないため）
+- `.env.example` に `DATABASE_URL` のテンプレートを記載（`.env` は Git 管理外）
+  ```
+  DATABASE_URL="postgresql://postgres:postgres@localhost:5432/kakeibo?schema=public"
+  ```
+- 初回マイグレーションは DB 接続環境が整ってから実行する
   ```bash
   pnpm exec prisma migrate dev --name init
   ```
 
 ### 1-5. Biome 設定
 
-- ESLint を削除し Biome に置き換え
+- Next.js 16 は ESLint を含まないため、削除は不要。Biome をインストール
   ```bash
-  pnpm remove eslint eslint-config-next
   pnpm add -D @biomejs/biome
   pnpm exec biome init
   ```
-- `biome.json` の設定
+- `biome.json` の設定（Biome 2.x）
   ```json
   {
-    "$schema": "https://biomejs.dev/schemas/2.0.0/schema.json",
-    "organizeImports": { "enabled": true },
-    "linter": {
+    "$schema": "https://biomejs.dev/schemas/2.4.4/schema.json",
+    "vcs": {
       "enabled": true,
-      "rules": { "recommended": true }
+      "clientKind": "git",
+      "useIgnoreFile": true
+    },
+    "files": {
+      "ignoreUnknown": false,
+      "includes": ["**", "!sample"]
     },
     "formatter": {
       "enabled": true,
       "indentStyle": "tab",
       "lineWidth": 100
     },
+    "linter": {
+      "enabled": true,
+      "rules": { "recommended": true }
+    },
     "javascript": {
       "formatter": { "semicolons": "asNeeded" }
+    },
+    "css": {
+      "parser": { "tailwindDirectives": true }
+    },
+    "assist": {
+      "enabled": true,
+      "actions": {
+        "source": { "organizeImports": "on" }
+      }
     }
   }
   ```
+  - Biome 2.x の変更点:
+    - `ignore` → `files.includes` でネガションパターンを使用（`["**", "!sample"]`）
+    - `organizeImports` → `assist.actions.source.organizeImports` に移動
+    - `css.parser.tailwindDirectives: true` で Tailwind CSS v4 の `@theme` 等を許可
+    - `vcs` で `.gitignore` のパターンを尊重
 - `package.json` にスクリプト追加
   ```json
   {
@@ -175,7 +239,7 @@ Next.js 16 プロジェクトの初期化と開発環境の構築を行う。以
 #### インストール
 
 ```bash
-pnpm add -D vitest @vitejs/plugin-react @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom
+pnpm add -D vitest @vitejs/plugin-react @testing-library/react @testing-library/jest-dom @testing-library/user-event jsdom vite-tsconfig-paths
 ```
 
 #### `vitest.config.ts` の作成
@@ -264,28 +328,34 @@ src/
 ### 1-8. .gitignore 更新
 
 - `.env` が含まれていることを確認
-- `prisma/*.db`, `prisma/*.db-journal` を追加
-- `.next/`, `node_modules/`, `coverage/` 等の確認
+- `prisma/*.db`, `prisma/*.db-journal` を確認
+- `.next/`, `node_modules/`, `coverage/` 等を確認
+- `/src/generated/prisma` を追加（Prisma 7 の生成先）
+- 既存の `.gitignore` に大部分のエントリが含まれていたため、Prisma 生成ファイルの追加のみ実施
 
 ## 完了条件
 
-- [ ] `pnpm dev` でアプリが起動し、ダッシュボードページが表示される
-- [ ] `pnpm exec prisma migrate dev` が正常に完了する
-- [ ] `pnpm lint` （Biome）がエラーなく通過する
-- [ ] TypeScript strict モードでのビルドが成功する（`pnpm build`）
-- [ ] ヘッダーが表示され、`/` → `/dashboard` のリダイレクトが動作する
-- [ ] `pnpm test:run` でサンプルテストが通過する
+- [x] `pnpm dev` でアプリが起動し、ダッシュボードページが表示される
+- [x] `pnpm lint` （Biome）がエラーなく通過する
+- [x] TypeScript strict モードでのビルドが成功する（`pnpm build`）
+- [x] ヘッダーが表示され、`/` → `/dashboard` のリダイレクトが動作する
+- [x] `pnpm test:run` でサンプルテストが通過する
 
 ## 成果物
 
 | ファイル | 説明 |
 |---|---|
 | `package.json` | 依存関係・スクリプト定義 |
+| `pnpm-workspace.yaml` | pnpm ワークスペース設定（Prisma ビルド許可リスト） |
+| `.node-version` | Node.js バージョン指定（v22） |
 | `tsconfig.json` | TypeScript 設定 |
 | `next.config.ts` | Next.js 設定 |
+| `postcss.config.mjs` | PostCSS 設定（Tailwind CSS v4） |
 | `biome.json` | Biome リンター/フォーマッター設定 |
 | `prisma/schema.prisma` | データベーススキーマ |
-| `.env` | 環境変数（Git 管理外） |
+| `prisma.config.ts` | Prisma 7 設定ファイル（DB 接続先等） |
+| `.env.example` | 環境変数テンプレート |
+| `src/server/lib/prisma.ts` | Prisma クライアントシングルトン |
 | `src/app/layout.tsx` | ルートレイアウト |
 | `src/app/globals.css` | グローバルスタイル（Tailwind エントリ） |
 | `src/app/page.tsx` | トップページ（リダイレクト） |
@@ -294,3 +364,4 @@ src/
 | `src/client/components/layout/Header.tsx` | ヘッダーコンポーネント |
 | `vitest.config.ts` | Vitest 設定 |
 | `src/test/setup.ts` | テストセットアップ |
+| `src/test/setup.test.ts` | Vitest 動作確認テスト |
