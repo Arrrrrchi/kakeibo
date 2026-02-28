@@ -6,7 +6,7 @@
 
 ## Tech Stack
 
-- **Framework**: Next.js 15 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **UI**: React 19 + TypeScript 5 (strict mode)
 - **Styling**: Tailwind CSS v4 (`@import "tailwindcss"` 方式)
 - **ORM**: Prisma + PostgreSQL
@@ -14,7 +14,7 @@
 - **Package Manager**: pnpm
 - **Linter/Formatter**: Biome (ESLint は使わない)
 - **Test**: Vitest + React Testing Library
-- **Node.js**: v20 LTS
+- **Node.js**: v22
 
 ## Architecture
 
@@ -31,6 +31,7 @@
 - Biome 設定: タブインデント、セミコロンなし、行幅 100
 - 日本語のコメントは最小限にし、コードで意図を表現する
 - コミットメッセージは日本語で、Conventional Commits 形式 (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`)
+- コミットメッセージの末尾にタスク番号を含める（例: `feat: ○○を追加 (1-1, 1-2)`）
 - コミットメッセージに `Co-Authored-By` は付けない
 - PR 作成時は `.github/pull_request_template.md` のフォーマットに従う
 
@@ -72,6 +73,13 @@ pnpm test:run     # テスト実行 (single run)
 pnpm lint         # Biome lint
 pnpm lint:fix     # Biome lint + 自動修正
 ```
+
+## Phase 完了時のルール
+
+各 Phase の実装が完了したら、PR 作成前に以下を行う:
+
+1. **計画書の実態反映**: 該当 Phase の `docs/phaseN_*.md` を実際の実装と見比べ、差分があれば計画書を実態に合わせて修正する（コマンド、設定、コード例、成果物テーブル、完了条件のチェック状態など）
+2. **他 Phase への影響確認**: 技術スタックやツールバージョンの変更があった場合、後続 Phase のドキュメントに矛盾が生じていないか確認し、必要なら修正する
 
 ## Key Design Docs
 
