@@ -1,171 +1,102 @@
-# 家計簿アプリケーション (Kakeibo)
+# kakeibo - 家計分析ダッシュボード
 
-Node.js + Express + PostgreSQLで構築された家計簿管理アプリケーションです。
+マネーフォワード Me の CSV データをもとに、家計の支出を予算と比較・分析するダッシュボードアプリケーションです。
 
-## 機能
+## 主な機能
 
-- ユーザー登録・ログイン
-- カテゴリ管理（収入・支出）
-- 取引記録（収入・支出の登録・編集・削除）
-- 統計情報とダッシュボード
-- 月別・年別分析
-- JWTベースの認証システム
-
-## セットアップ
-
-### 必要な環境
-
-- Node.js (v16以上)
-- PostgreSQL (v12以上)
-- npm または yarn
-
-### インストール
-
-1. リポジトリをクローン
-```bash
-git clone https://github.com/Arrrrrchi/kakeibo.git
-cd kakeibo
-```
-
-2. 依存関係をインストール
-```bash
-npm install
-```
-
-3. PostgreSQLデータベースを作成
-```bash
-createdb kakeibo_db
-```
-
-4. 環境変数を設定
-`.env`ファイルを作成し、以下のように設定してください：
-```env
-# Database
-DB_HOST=localhost
-DB_PORT=5432
-DB_NAME=kakeibo_db
-DB_USER=your_username
-DB_PASSWORD=your_password
-
-# JWT
-JWT_SECRET=your-super-secret-jwt-key
-
-# Server
-PORT=3000
-NODE_ENV=development
-
-# CORS
-CORS_ORIGIN=http://localhost:3000
-```
-
-5. サーバーを起動
-```bash
-# 開発モード
-npm run dev
-
-# 本番モード
-npm start
-```
-
-## API エンドポイント
-
-### 認証 (`/api/auth`)
-
-- `POST /api/auth/register` - ユーザー登録
-- `POST /api/auth/login` - ログイン
-
-### ユーザー管理 (`/api/users`)
-
-- `GET /api/users/me` - 現在のユーザー情報取得
-- `PUT /api/users/me` - ユーザー情報更新
-- `PUT /api/users/me/password` - パスワード変更
-- `DELETE /api/users/me` - アカウント削除
-
-### カテゴリ管理 (`/api/categories`)
-
-- `GET /api/categories` - カテゴリ一覧取得
-- `POST /api/categories` - カテゴリ作成
-- `PUT /api/categories/:id` - カテゴリ更新
-- `DELETE /api/categories/:id` - カテゴリ削除
-
-### 取引管理 (`/api/transactions`)
-
-- `GET /api/transactions` - 取引一覧取得（フィルタリング・ページネーション対応）
-- `GET /api/transactions/:id` - 取引詳細取得
-- `POST /api/transactions` - 取引作成
-- `PUT /api/transactions/:id` - 取引更新
-- `DELETE /api/transactions/:id` - 取引削除
-- `GET /api/transactions/stats/summary` - 統計サマリー取得
-
-### ダッシュボード (`/api/dashboard`)
-
-- `GET /api/dashboard` - ダッシュボード情報取得
-- `GET /api/dashboard/monthly/:year/:month` - 月別統計取得
-- `GET /api/dashboard/yearly/:year` - 年別統計取得
-
-## 使用例
-
-### ユーザー登録
-```bash
-curl -X POST http://localhost:3000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "田中太郎",
-    "email": "tanaka@example.com",
-    "password": "password123"
-  }'
-```
-
-### ログイン
-```bash
-curl -X POST http://localhost:3000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{
-    "email": "tanaka@example.com",
-    "password": "password123"
-  }'
-```
-
-### 取引作成
-```bash
-curl -X POST http://localhost:3000/api/transactions \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{
-    "type": "expense",
-    "amount": 1500,
-    "categoryId": 1,
-    "date": "2025-06-02",
-    "memo": "昼食代"
-  }'
-```
+- **CSV インポート**: マネーフォワード Me からエクスポートした CSV ファイル（cp932）を取り込み
+- **予算マッピング**: マネーフォワードの中項目を自分で定義した予算項目にインタラクティブに紐づけ
+- **予算対比レポート**: 月次の実績と予算を比較し、達成率・差額を可視化
+- **サマリーダッシュボード**: KPI カード、月次推移チャート、大項目別支出構成グラフ
+- **予算 CRUD**: 予算項目の追加・編集・削除（4 種類の周期パターン対応）
+- **未割当検知**: どの予算にも紐づいていない支出カテゴリを自動検出・一覧表示
 
 ## 技術スタック
 
-- **Backend**: Node.js, Express.js
-- **Database**: PostgreSQL, Sequelize ORM
-- **Authentication**: JWT (JSON Web Tokens)
-- **Security**: Helmet, bcrypt
-- **Development**: nodemon, dotenv
+| カテゴリ | 技術 |
+|---|---|
+| フレームワーク | Next.js 15（App Router） |
+| UI | React 19 + TypeScript 5 |
+| スタイリング | Tailwind CSS v4 |
+| ORM | Prisma |
+| データベース | PostgreSQL |
+| チャート | Recharts |
+| パッケージマネージャー | pnpm |
+| リンター / フォーマッター | Biome |
 
-## プロジェクト構造
+## ディレクトリ構成
 
 ```
-├── db.js                 # データベース接続設定
-├── index.js              # メインサーバーファイル
-├── models.js             # Sequelizeモデル定義
-├── middleware/
-│   └── auth.js           # JWT認証ミドルウェア
-├── routes/
-│   ├── auth.js           # 認証ルート
-│   ├── users.js          # ユーザー管理ルート
-│   ├── categories.js     # カテゴリ管理ルート
-│   ├── transactions.js   # 取引管理ルート
-│   └── dashboard.js      # ダッシュボードルート
-├── utils/
-│   └── defaultCategories.js # デフォルトカテゴリ作成
-├── .env                  # 環境変数設定
-└── package.json          # プロジェクト設定
+src/
+├── app/                    # App Router ルーティング
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   └── dashboard/
+│       └── page.tsx        # メインダッシュボード
+├── client/
+│   ├── components/
+│   │   ├── dashboard/      # ダッシュボード関連コンポーネント
+│   │   ├── charts/         # チャートコンポーネント
+│   │   ├── ui/             # 汎用 UI コンポーネント
+│   │   ├── forms/          # フォームコンポーネント
+│   │   └── layout/         # レイアウトコンポーネント
+│   └── lib/                # クライアント側ヘルパー
+├── server/
+│   ├── lib/                # Prisma クライアント、CSV パーサー等
+│   ├── repositories/       # データベースアクセス層
+│   ├── usecases/           # ビジネスロジック
+│   ├── loaders/            # サーバーサイドデータ取得
+│   └── actions/            # サーバーアクション（副作用処理）
+└── types/                  # 型定義
+```
+
+## データベーステーブル
+
+- **transactions** — マネーフォワードから取り込んだ取引データ
+- **budget_items** — 予算項目（名前、月額、周期タイプ）
+- **budget_category_mappings** — 予算項目とマネーフォワード中項目の紐づけ
+
+## 予算の周期パターン
+
+| 周期 | 説明 | 例 |
+|---|---|---|
+| 毎月・固定 | 毎月発生し金額がほぼ一定 | 家賃、通信費、奨学金返済 |
+| 毎月・変動 | 毎月発生するが金額が変動 | 食費、交通費、ガソリン代 |
+| 不定期・固定 | 不定期だが金額が決まっている | 火災保険、NHK、Amazonプライム |
+| 不定期・変動 | 不定期かつ金額も変動 | 旅行費、家具・家電、車検代 |
+
+## セットアップ
+
+```bash
+# 依存関係のインストール
+pnpm install
+
+# 環境変数の設定
+cp .env.example .env.local
+# DATABASE_URL を設定
+
+# データベースのマイグレーション
+pnpm db:migrate
+
+# シードデータの投入（デフォルト予算項目）
+pnpm db:seed
+
+# 開発サーバー起動
+pnpm dev
+```
+
+## 開発コマンド
+
+```bash
+pnpm dev          # 開発サーバー起動
+pnpm build        # プロダクションビルド
+pnpm lint         # Biome によるリント
+pnpm format       # Biome によるフォーマット
+pnpm typecheck    # TypeScript 型チェック
+pnpm db:migrate   # マイグレーション実行
+pnpm db:seed      # シードデータ投入
+pnpm db:studio    # Prisma Studio 起動
 ```
 
 ## ライセンス
