@@ -1,6 +1,6 @@
-import { loadDashboardData } from "@/server/loaders/load-dashboard-data"
 import { DashboardTabs } from "@/client/components/dashboard/DashboardTabs"
 import { CsvUploadForm } from "@/client/components/forms/CsvUploadForm"
+import { loadDashboardData } from "@/server/loaders/load-dashboard-data"
 
 export default async function DashboardPage() {
 	const data = await loadDashboardData()

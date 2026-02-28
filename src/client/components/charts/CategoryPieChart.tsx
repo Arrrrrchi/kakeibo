@@ -1,8 +1,8 @@
 "use client"
 
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 import { formatCurrency, formatPercent } from "@/client/lib/format"
 import type { CategoryBreakdown } from "@/types/transaction"
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
 
 const COLORS = [
 	"#3b82f6",
@@ -56,7 +56,7 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 						<Cell key={`cell-${grouped[index].name}`} fill={COLORS[index % COLORS.length]} />
 					))}
 				</Pie>
-				<Tooltip formatter={(value: number) => formatCurrency(value)} />
+				<Tooltip formatter={(value) => formatCurrency(Number(value))} />
 				<Legend />
 			</PieChart>
 		</ResponsiveContainer>

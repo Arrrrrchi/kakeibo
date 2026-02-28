@@ -1,9 +1,17 @@
 "use client"
 
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Legend,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts"
 import { formatCompactCurrency, formatCurrency, formatMonth } from "@/client/lib/format"
-import type { CategoryBreakdown } from "@/types/transaction"
-import type { MonthlyAggregation } from "@/types/transaction"
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
+import type { CategoryBreakdown, MonthlyAggregation } from "@/types/transaction"
 
 const COLORS = [
 	"#3b82f6",
@@ -63,7 +71,7 @@ export function StackedBarChart({ data, categoryData }: StackedBarChartProps) {
 				<CartesianGrid strokeDasharray="3 3" />
 				<XAxis dataKey="month" tick={{ fontSize: 12 }} />
 				<YAxis tickFormatter={(v: number) => formatCompactCurrency(v)} tick={{ fontSize: 12 }} />
-				<Tooltip formatter={(value: number) => formatCurrency(value)} />
+				<Tooltip formatter={(value) => formatCurrency(Number(value))} />
 				<Legend />
 				{categories.map((cat, index) => (
 					<Bar key={cat} dataKey={cat} stackId="a" fill={COLORS[index % COLORS.length]} />

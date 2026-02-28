@@ -1,8 +1,17 @@
 "use client"
 
+import {
+	Bar,
+	BarChart,
+	CartesianGrid,
+	Legend,
+	ResponsiveContainer,
+	Tooltip,
+	XAxis,
+	YAxis,
+} from "recharts"
 import { formatCompactCurrency, formatCurrency, formatMonth } from "@/client/lib/format"
 import type { MonthlyAggregation } from "@/types/transaction"
-import { Bar, BarChart, CartesianGrid, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 
 type MonthlyTrendChartProps = {
 	data: MonthlyAggregation[]
@@ -25,7 +34,7 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
 				<CartesianGrid strokeDasharray="3 3" />
 				<XAxis dataKey="month" tick={{ fontSize: 12 }} />
 				<YAxis tickFormatter={(v: number) => formatCompactCurrency(v)} tick={{ fontSize: 12 }} />
-				<Tooltip formatter={(value: number) => formatCurrency(value)} />
+				<Tooltip formatter={(value) => formatCurrency(Number(value))} />
 				<Legend />
 				<Bar dataKey="収入" fill="#22c55e" />
 				<Bar dataKey="支出" fill="#ef4444" />

@@ -1,8 +1,6 @@
 import type { DashboardData } from "@/types/dashboard"
 
-export function createMockDashboardData(
-	overrides?: Partial<DashboardData>,
-): DashboardData {
+export function createMockDashboardData(overrides?: Partial<DashboardData>): DashboardData {
 	return {
 		kpiSummary: {
 			totalIncome: 3600000,
