@@ -2,17 +2,17 @@
 
 ## 概要
 
-Next.js 15 プロジェクトの初期化と開発環境の構築を行う。以降のフェーズの土台となるため、技術スタックの設定を正確に行う。
+Next.js 16 プロジェクトの初期化と開発環境の構築を行う。以降のフェーズの土台となるため、技術スタックの設定を正確に行う。
 
 ## タスク一覧
 
-### 1-1. Next.js 15 プロジェクト初期化
+### 1-1. Next.js 16 プロジェクト初期化
 
 - pnpm でプロジェクトを作成
   ```bash
-  pnpm create next-app@latest . --typescript --tailwind --eslint --app --src-dir --import-alias "@/*"
+  pnpm create next-app@latest . --typescript --tailwind --app --src-dir --import-alias "@/*"
   ```
-- Node.js バージョンを `.node-version` に記載（v20 LTS 推奨）
+- Node.js バージョンを `.node-version` に記載（v22 推奨、最小 v20.9）
 - `next.config.ts` の基本設定
 
 ### 1-2. TypeScript 設定
