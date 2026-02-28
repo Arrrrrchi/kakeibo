@@ -9,7 +9,8 @@ const notoSansJP = Noto_Sans_JP({
 
 export const metadata: Metadata = {
 	title: "家計分析ダッシュボード",
-	description: "マネーフォワード Me の CSV データをもとに家計の支出を予算と比較・分析するダッシュボード",
+	description:
+		"マネーフォワード Me の CSV データをもとに家計の支出を予算と比較・分析するダッシュボード",
 }
 
 export default function RootLayout({
