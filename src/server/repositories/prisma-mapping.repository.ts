@@ -38,12 +38,8 @@ export class PrismaMappingRepository implements IMappingRepository {
 			select: { majorCategory: true, minorCategory: true },
 		})
 
-		const mappedSet = new Set(
-			mappedCategories.map((m) => `${m.majorCategory}|${m.minorCategory}`),
-		)
+		const mappedSet = new Set(mappedCategories.map((m) => `${m.majorCategory}|${m.minorCategory}`))
 
-		return allCategories.filter(
-			(c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`),
-		)
+		return allCategories.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`))
 	}
 }

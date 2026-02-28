@@ -20,10 +20,7 @@ export class GetBudgetDetailUsecase {
 
 		const transactionsByCategory = await Promise.all(
 			budgetItem.mappings.map((mapping) =>
-				this.transactionRepository.findByCategory(
-					mapping.majorCategory,
-					mapping.minorCategory,
-				),
+				this.transactionRepository.findByCategory(mapping.majorCategory, mapping.minorCategory),
 			),
 		)
 		const transactions = transactionsByCategory.flat()

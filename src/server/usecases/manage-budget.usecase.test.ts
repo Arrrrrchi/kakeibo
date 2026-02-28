@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it } from "vitest"
 import { createMockBudgetRepository } from "@/test/helpers/mock-repositories"
 import { ManageBudgetUsecase } from "./manage-budget.usecase"
 

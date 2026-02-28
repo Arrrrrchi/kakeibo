@@ -36,7 +36,7 @@ describe("GetBudgetDetailUsecase", () => {
 		const result = await usecase.execute("budget-1")
 
 		expect(result).not.toBeNull()
-		expect(result!.budgetItem.name).toBe("電気代")
+		expect(result?.budgetItem.name).toBe("電気代")
 		expect(budgetRepo.findById).toHaveBeenCalledWith("budget-1")
 	})
 

@@ -6,8 +6,7 @@ export default defineConfig({
 	plugins: [react(), tsconfigPaths()],
 	resolve: {
 		alias: {
-			"server-only": new URL("./src/test/helpers/server-only-mock.ts", import.meta.url)
-				.pathname,
+			"server-only": new URL("./src/test/helpers/server-only-mock.ts", import.meta.url).pathname,
 		},
 	},
 	test: {

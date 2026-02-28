@@ -77,9 +77,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 	}
 
 	async getDistinctCategories(): Promise<{ majorCategory: string; minorCategory: string }[]> {
-		const results = await prisma.$queryRaw<
-			{ major_category: string; minor_category: string }[]
-		>`
+		const results = await prisma.$queryRaw<{ major_category: string; minor_category: string }[]>`
 			SELECT DISTINCT major_category, minor_category
 			FROM transactions
 			WHERE is_income = false
