@@ -15,7 +15,7 @@
 
 | カテゴリ | 技術 |
 |---|---|
-| フレームワーク | Next.js 15（App Router） |
+| フレームワーク | Next.js 16（App Router） |
 | UI | React 19 + TypeScript 5 |
 | スタイリング | Tailwind CSS v4 |
 | ORM | Prisma |
