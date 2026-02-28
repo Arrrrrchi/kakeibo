@@ -33,6 +33,7 @@
 - コミットメッセージは日本語で、Conventional Commits 形式 (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`)
 - コミットメッセージの末尾にタスク番号を含める（例: `feat: ○○を追加 (1-1, 1-2)`）
 - コミットメッセージに `Co-Authored-By` は付けない
+- タスクごとにコミットする（複数タスクをまとめてコミットしない）
 - PR 作成時は `.github/pull_request_template.md` のフォーマットに従う
 
 ## TDD
