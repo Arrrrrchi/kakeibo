@@ -6,6 +6,9 @@
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
+		"test": "vitest",
+		"test:run": "vitest run",
+		"test:coverage": "vitest run --coverage",
 		"lint": "biome check .",
 		"lint:fix": "biome check --fix .",
 		"format": "biome format --write ."
@@ -20,12 +23,19 @@
 	"devDependencies": {
 		"@biomejs/biome": "^2.4.4",
 		"@tailwindcss/postcss": "^4",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.2",
+		"@testing-library/user-event": "^14.6.1",
 		"@types/node": "^20",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"@vitejs/plugin-react": "^5.1.4",
 		"dotenv": "^17.3.1",
+		"jsdom": "^28.1.0",
 		"tailwindcss": "^4",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vite-tsconfig-paths": "^6.1.1",
+		"vitest": "^4.0.18"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [
