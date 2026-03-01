@@ -160,7 +160,7 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 					<Button type="button" variant="secondary" onClick={onClose} disabled={isPending}>
 						キャンセル
 					</Button>
-					<Button type="submit" disabled={isPending}>
+					<Button type="submit" loading={isPending}>
 						{isPending ? "保存中..." : "保存"}
 					</Button>
 				</div>

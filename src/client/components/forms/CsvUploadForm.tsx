@@ -49,8 +49,8 @@ export function CsvUploadForm() {
 					className="block text-sm file:mr-3 file:rounded-lg file:border-0 file:bg-gray-100 file:px-3 file:py-2 file:text-sm file:font-medium file:text-gray-700 hover:file:bg-gray-200"
 				/>
 			</div>
-			<Button type="submit" disabled={!file || isPending}>
-				{isPending ? "アップロード中..." : "アップロード"}
+			<Button type="submit" disabled={!file} loading={isPending}>
+				{isPending ? "インポート中..." : "アップロード"}
 			</Button>
 		</form>
 	)
