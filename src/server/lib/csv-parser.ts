@@ -80,7 +80,7 @@ const COLUMN_MAP: Record<string, keyof ColumnIndices> = {
 }
 
 function parseHeaderLine(headerLine: string): ColumnIndices {
-	const columns = headerLine.split(",")
+	const columns = splitCsvLine(headerLine)
 	const indices = {} as ColumnIndices
 
 	for (let i = 0; i < columns.length; i++) {

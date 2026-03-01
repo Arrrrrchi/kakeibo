@@ -211,6 +211,21 @@ describe("parseMoneyforwardCsv", () => {
 			expect(result[0].memo).toBeNull()
 		})
 
+		it("ヘッダーがダブルクォートで囲まれた CSV をパースできる", async () => {
+			const header =
+				'"計算対象","日付","内容","金額（円）","保有金融機関","大項目","中項目","メモ","振替","ID"'
+			const dataLine =
+				'"1","2025/04/30","東京電力","-12681","楽天カード","水道・光熱費","電気代","","0","test-id"'
+			const csv = Buffer.from(`${header}\r\n${dataLine}`, "utf-8")
+			const result = await parseMoneyforwardCsv(csv)
+
+			expect(result).toHaveLength(1)
+			expect(result[0].description).toBe("東京電力")
+			expect(result[0].amount).toBe(12681)
+			expect(result[0].majorCategory).toBe("水道・光熱費")
+			expect(result[0].minorCategory).toBe("電気代")
+		})
+
 		it("日本語が文字化けしない（cp932 エンコーディング）", async () => {
 			const buffer = await readFixture("sample.csv")
 			const result = await parseMoneyforwardCsv(buffer)
