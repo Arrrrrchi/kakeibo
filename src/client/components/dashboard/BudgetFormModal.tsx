@@ -1,11 +1,11 @@
 "use client"
 
 import { useRef, useState, useTransition } from "react"
-import type { BudgetItemWithMappings } from "@/types/budget"
-import { upsertBudget } from "@/server/actions/upsert-budget"
-import { deleteBudget } from "@/server/actions/delete-budget"
-import { Modal } from "@/client/components/ui/Modal"
 import { Button } from "@/client/components/ui/Button"
+import { Modal } from "@/client/components/ui/Modal"
+import { deleteBudget } from "@/server/actions/delete-budget"
+import { upsertBudget } from "@/server/actions/upsert-budget"
+import type { BudgetItemWithMappings } from "@/types/budget"
 
 type BudgetFormModalProps = {
 	isOpen: boolean
@@ -82,10 +82,7 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 				</div>
 
 				<div>
-					<label
-						htmlFor="budget-amount"
-						className="block text-sm font-medium text-gray-700 mb-1"
-					>
+					<label htmlFor="budget-amount" className="block text-sm font-medium text-gray-700 mb-1">
 						月額予算（円）
 					</label>
 					<input
@@ -101,10 +98,7 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 				</div>
 
 				<div>
-					<label
-						htmlFor="budget-cycle"
-						className="block text-sm font-medium text-gray-700 mb-1"
-					>
+					<label htmlFor="budget-cycle" className="block text-sm font-medium text-gray-700 mb-1">
 						周期
 					</label>
 					<select

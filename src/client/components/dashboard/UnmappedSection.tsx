@@ -31,9 +31,7 @@ export function UnmappedSection({ unmappedCategories, onCategoryClick }: Unmappe
 			</div>
 			{expanded && (
 				<>
-					<p className="text-xs text-amber-700 mb-3">
-						どの予算にも紐づいていない支出カテゴリです
-					</p>
+					<p className="text-xs text-amber-700 mb-3">どの予算にも紐づいていない支出カテゴリです</p>
 					<div className="flex flex-wrap gap-2">
 						{unmappedCategories.map((cat) => (
 							<CategoryChip
