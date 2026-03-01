@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode, useCallback, useEffect } from "react"
+import { type ReactNode, useCallback, useEffect, useRef } from "react"
 
 type ModalProps = {
 	isOpen: boolean
@@ -10,9 +10,32 @@ type ModalProps = {
 }
 
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
+	const dialogRef = useRef<HTMLDivElement>(null)
+
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
-			if (e.key === "Escape") onClose()
+			if (e.key === "Escape") {
+				onClose()
+				return
+			}
+
+			if (e.key === "Tab" && dialogRef.current) {
+				const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+					'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+				)
+				if (focusable.length === 0) return
+
+				const first = focusable[0]
+				const last = focusable[focusable.length - 1]
+
+				if (e.shiftKey && document.activeElement === first) {
+					e.preventDefault()
+					last.focus()
+				} else if (!e.shiftKey && document.activeElement === last) {
+					e.preventDefault()
+					first.focus()
+				}
+			}
 		},
 		[onClose],
 	)
@@ -21,7 +44,17 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 		if (!isOpen) return
 
 		document.addEventListener("keydown", handleKeyDown)
-		return () => document.removeEventListener("keydown", handleKeyDown)
+
+		const previousFocus = document.activeElement as HTMLElement | null
+		const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
+			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+		)
+		focusable?.[0]?.focus()
+
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown)
+			previousFocus?.focus()
+		}
 	}, [isOpen, handleKeyDown])
 
 	if (!isOpen) return null
@@ -35,6 +68,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 			onClick={onClose}
 		>
 			<div
+				ref={dialogRef}
 				role="dialog"
 				aria-modal="true"
 				aria-label={title}
@@ -46,6 +80,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 					<h2 className="text-lg font-semibold">{title}</h2>
 					<button
 						type="button"
+						aria-label="閉じる"
 						onClick={onClose}
 						className="text-gray-400 hover:text-gray-600 text-xl leading-none"
 					>
