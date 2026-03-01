@@ -43,7 +43,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 	useEffect(() => {
 		if (!isOpen) return
 
-		document.addEventListener("keydown", handleKeyDown)
+		document.addEventListener("keydown", handleKeyDown, true)
 
 		const previousFocus = document.activeElement as HTMLElement | null
 		const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
@@ -52,7 +52,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 		focusable?.[0]?.focus()
 
 		return () => {
-			document.removeEventListener("keydown", handleKeyDown)
+			document.removeEventListener("keydown", handleKeyDown, true)
 			previousFocus?.focus()
 		}
 	}, [isOpen, handleKeyDown])
