@@ -193,6 +193,7 @@ Phase 3 で実装済み。
 #### `src/app/dashboard/page.tsx`
 
 - サーバーコンポーネントとして `loadDashboardData()` を呼び出し
+- `export const dynamic = "force-dynamic"` で動的レンダリングを強制（ビルド時に DB 接続が不要になる）
 - ページ上部にタイトル「ダッシュボード」と `CsvUploadForm` を横並びで配置
 - 取得したデータを `DashboardTabs` に props として渡す
 
@@ -200,6 +201,8 @@ Phase 3 で実装済み。
 import { DashboardTabs } from "@/client/components/dashboard/DashboardTabs"
 import { CsvUploadForm } from "@/client/components/forms/CsvUploadForm"
 import { loadDashboardData } from "@/server/loaders/load-dashboard-data"
+
+export const dynamic = "force-dynamic"
 
 export default async function DashboardPage() {
   const data = await loadDashboardData()
