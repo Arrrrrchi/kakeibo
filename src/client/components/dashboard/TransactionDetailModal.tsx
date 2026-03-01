@@ -71,7 +71,7 @@ export function TransactionDetailModal({
 									<BarChart data={chartData}>
 										<XAxis dataKey="month" tick={{ fontSize: 11 }} />
 										<YAxis tick={{ fontSize: 11 }} />
-										<Tooltip formatter={(value: number) => [formatCurrency(value), "支出"]} />
+										<Tooltip formatter={(value) => [formatCurrency(Number(value)), "支出"]} />
 										<Bar dataKey="total" fill="#2980b9" radius={[2, 2, 0, 0]} />
 									</BarChart>
 								</ResponsiveContainer>
