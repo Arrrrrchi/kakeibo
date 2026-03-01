@@ -2,6 +2,8 @@
 
 import { useState } from "react"
 import type { DashboardData } from "@/types/dashboard"
+import { MappingPanel } from "./MappingPanel"
+import { ReportPanel } from "./ReportPanel"
 import { SummaryPanel } from "./SummaryPanel"
 
 type Tab = "summary" | "mapping" | "report"
@@ -48,14 +50,17 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 			<div role="tabpanel">
 				{activeTab === "summary" && <SummaryPanel data={dashboardData} />}
 				{activeTab === "mapping" && (
-					<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
-						予算マッピング（Phase 5 で実装）
-					</div>
+					<MappingPanel
+						budgetItems={dashboardData.budgetItems}
+						allCategories={dashboardData.categoryBreakdown}
+						unmappedCategories={dashboardData.unmappedCategories}
+					/>
 				)}
 				{activeTab === "report" && (
-					<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
-						予算対比レポート（Phase 5 で実装）
-					</div>
+					<ReportPanel
+						budgetReport={dashboardData.budgetReport}
+						months={dashboardData.monthlyTrend.map((m) => m.month)}
+					/>
 				)}
 			</div>
 		</div>
