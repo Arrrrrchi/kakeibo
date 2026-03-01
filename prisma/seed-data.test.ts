@@ -21,24 +21,17 @@ describe("シードデータ", () => {
 		}
 	})
 
-	it("sortOrder が周期タイプに応じた範囲に収まっている", () => {
-		const ranges: Record<string, [number, number]> = {
-			monthly_fixed: [100, 199],
-			monthly_variable: [200, 299],
-			irregular_fixed: [300, 399],
-			irregular_variable: [400, 499],
-		}
+	it("sortOrder が cycleType ごとに 1 から始まる連番になっている", () => {
+		const grouped = new Map<string, number[]>()
 		for (const item of seedData) {
-			const [min, max] = ranges[item.cycleType]
-			expect(item.sortOrder).toBeGreaterThanOrEqual(min)
-			expect(item.sortOrder).toBeLessThanOrEqual(max)
+			const orders = grouped.get(item.cycleType) ?? []
+			orders.push(item.sortOrder)
+			grouped.set(item.cycleType, orders)
 		}
-	})
-
-	it("sortOrder に重複がない", () => {
-		const sortOrders = seedData.map((item) => item.sortOrder)
-		const unique = new Set(sortOrders)
-		expect(unique.size).toBe(sortOrders.length)
+		for (const [cycleType, orders] of grouped) {
+			const expected = orders.map((_, i) => i + 1)
+			expect(orders, `${cycleType} の sortOrder`).toEqual(expected)
+		}
 	})
 
 	it("費目名に重複がない", () => {
