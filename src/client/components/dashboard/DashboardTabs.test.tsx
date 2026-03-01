@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { createMockDashboardData } from "@/test/fixtures/mock-dashboard-data"
 import { describe, expect, it } from "vitest"
+import { createMockDashboardData } from "@/test/fixtures/mock-dashboard-data"
 import { DashboardTabs } from "./DashboardTabs"
 
 const mockData = createMockDashboardData()
