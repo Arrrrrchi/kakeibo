@@ -15,7 +15,7 @@ export function UnmappedSection({ unmappedCategories, onCategoryClick }: Unmappe
 	if (unmappedCategories.length === 0) return null
 
 	return (
-		<div className="sticky top-0 z-10 bg-amber-50 border border-amber-300 rounded-lg p-4 mb-4">
+		<div className="sm:sticky sm:top-0 z-10 bg-amber-50 border border-amber-300 rounded-lg p-4 mb-4">
 			<div className="flex items-center justify-between mb-2">
 				<h3 className="text-sm font-semibold text-amber-800">
 					未割当のカテゴリ ({unmappedCategories.length}件)

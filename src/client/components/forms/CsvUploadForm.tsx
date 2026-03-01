@@ -35,7 +35,7 @@ export function CsvUploadForm() {
 	}
 
 	return (
-		<form onSubmit={handleSubmit} className="flex items-end gap-3">
+		<form onSubmit={handleSubmit} className="flex flex-col sm:flex-row sm:items-end gap-3">
 			<div>
 				<label htmlFor="csv-file" className="block text-xs text-gray-600 mb-1">
 					CSVファイル
