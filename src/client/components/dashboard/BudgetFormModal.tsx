@@ -3,6 +3,7 @@
 import { useRef, useState, useTransition } from "react"
 import { Button } from "@/client/components/ui/Button"
 import { Modal } from "@/client/components/ui/Modal"
+import { useToast } from "@/client/components/ui/Toast"
 import { deleteBudget } from "@/server/actions/delete-budget"
 import { upsertBudget } from "@/server/actions/upsert-budget"
 import type { BudgetItemWithMappings } from "@/types/budget"
@@ -27,6 +28,7 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 	const [isPending, startTransition] = useTransition()
 	const [error, setError] = useState<string | null>(null)
 	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
+	const { showToast } = useToast()
 
 	if (!isOpen) return null
 
@@ -42,9 +44,10 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 		startTransition(async () => {
 			const result = await upsertBudget(formData)
 			if (result.success) {
+				showToast(isEditMode ? "予算項目を更新しました" : "予算項目を追加しました", "success")
 				onClose()
 			} else {
-				setError(result.error ?? "エラーが発生しました")
+				setError(result.error)
 			}
 		})
 	}
@@ -54,9 +57,10 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 		startTransition(async () => {
 			const result = await deleteBudget(budgetItem.id)
 			if (result.success) {
+				showToast("予算項目を削除しました", "success")
 				onClose()
 			} else {
-				setError(result.error ?? "削除に失敗しました")
+				setError(result.error)
 			}
 		})
 	}

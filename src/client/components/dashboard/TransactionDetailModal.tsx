@@ -34,8 +34,10 @@ export function TransactionDetailModal({
 		setLoading(true)
 		getTransactionsByCategory(majorCategory, minorCategory)
 			.then((result) => {
-				setTransactions(result.transactions)
-				setMonthlyTrend(result.monthlyTrend)
+				if (result.success) {
+					setTransactions(result.data.transactions)
+					setMonthlyTrend(result.data.monthlyTrend)
+				}
 			})
 			.finally(() => setLoading(false))
 	}, [isOpen, majorCategory, minorCategory])

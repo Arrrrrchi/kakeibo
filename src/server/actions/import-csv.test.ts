@@ -47,6 +47,8 @@ describe("importCsv", () => {
 		const result = await importCsv(formData)
 
 		expect(result.success).toBe(true)
-		expect(result.importedCount).toBe(5)
+		if (result.success) {
+			expect(result.data.importedCount).toBe(5)
+		}
 	})
 })
