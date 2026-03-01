@@ -1,6 +1,7 @@
 "use client"
 
 import { useTransition } from "react"
+import { useToast } from "@/client/components/ui/Toast"
 import { formatCurrency } from "@/client/lib/format"
 import { updateMappings } from "@/server/actions/update-mappings"
 import type { BudgetItemWithMappings } from "@/types/budget"
@@ -21,6 +22,7 @@ export function BudgetItemCard({
 	onCategoryDetail,
 }: BudgetItemCardProps) {
 	const [isPending, startTransition] = useTransition()
+	const { showToast } = useToast()
 
 	const isMapped = (majorCategory: string, minorCategory: string): boolean =>
 		budgetItem.mappings.some(
@@ -46,7 +48,10 @@ export function BudgetItemCard({
 		}
 
 		startTransition(async () => {
-			await updateMappings(budgetItem.id, newCategories)
+			const result = await updateMappings(budgetItem.id, newCategories)
+			if (!result.success) {
+				showToast(result.error, "error")
+			}
 		})
 	}
 

@@ -29,16 +29,18 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
 	}))
 
 	return (
-		<ResponsiveContainer width="100%" height={300}>
-			<BarChart data={chartData}>
-				<CartesianGrid strokeDasharray="3 3" />
-				<XAxis dataKey="month" tick={{ fontSize: 12 }} />
-				<YAxis tickFormatter={(v: number) => formatCompactCurrency(v)} tick={{ fontSize: 12 }} />
-				<Tooltip formatter={(value) => formatCurrency(Number(value))} />
-				<Legend />
-				<Bar dataKey="収入" fill="#22c55e" />
-				<Bar dataKey="支出" fill="#ef4444" />
-			</BarChart>
-		</ResponsiveContainer>
+		<div aria-label="月次収支トレンドチャート" role="img">
+			<ResponsiveContainer width="100%" height={300}>
+				<BarChart data={chartData}>
+					<CartesianGrid strokeDasharray="3 3" />
+					<XAxis dataKey="month" tick={{ fontSize: 12 }} />
+					<YAxis tickFormatter={(v: number) => formatCompactCurrency(v)} tick={{ fontSize: 12 }} />
+					<Tooltip formatter={(value) => formatCurrency(Number(value))} />
+					<Legend />
+					<Bar dataKey="収入" fill="#22c55e" />
+					<Bar dataKey="支出" fill="#ef4444" />
+				</BarChart>
+			</ResponsiveContainer>
+		</div>
 	)
 }

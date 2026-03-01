@@ -1,23 +1,27 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
+import { ToastProvider } from "@/client/components/ui/Toast"
 import { createMockDashboardData } from "@/test/fixtures/mock-dashboard-data"
 import { DashboardTabs } from "./DashboardTabs"
 
 vi.mock("@/server/actions/update-mappings", () => ({
-	updateMappings: vi.fn(async () => ({ success: true })),
+	updateMappings: vi.fn(async () => ({ success: true, data: undefined })),
 }))
 
 vi.mock("@/server/actions/upsert-budget", () => ({
-	upsertBudget: vi.fn(async () => ({ success: true })),
+	upsertBudget: vi.fn(async () => ({ success: true, data: undefined })),
 }))
 
 vi.mock("@/server/actions/delete-budget", () => ({
-	deleteBudget: vi.fn(async () => ({ success: true })),
+	deleteBudget: vi.fn(async () => ({ success: true, data: undefined })),
 }))
 
 vi.mock("@/server/actions/get-transactions-by-category", () => ({
-	getTransactionsByCategory: vi.fn(async () => ({ transactions: [], monthlyTrend: [] })),
+	getTransactionsByCategory: vi.fn(async () => ({
+		success: true,
+		data: { transactions: [], monthlyTrend: [] },
+	})),
 }))
 
 vi.mock("recharts", () => ({
@@ -38,7 +42,11 @@ const mockData = createMockDashboardData()
 
 describe("DashboardTabs", () => {
 	it("3つのタブが表示される", () => {
-		render(<DashboardTabs dashboardData={mockData} />)
+		render(
+			<ToastProvider>
+				<DashboardTabs dashboardData={mockData} />
+			</ToastProvider>,
+		)
 
 		expect(screen.getByRole("tab", { name: /サマリー/ })).toBeInTheDocument()
 		expect(screen.getByRole("tab", { name: /予算マッピング/ })).toBeInTheDocument()
@@ -46,7 +54,11 @@ describe("DashboardTabs", () => {
 	})
 
 	it("デフォルトでサマリータブがアクティブ", () => {
-		render(<DashboardTabs dashboardData={mockData} />)
+		render(
+			<ToastProvider>
+				<DashboardTabs dashboardData={mockData} />
+			</ToastProvider>,
+		)
 
 		const summaryTab = screen.getByRole("tab", { name: /サマリー/ })
 		expect(summaryTab).toHaveAttribute("aria-selected", "true")
@@ -54,7 +66,11 @@ describe("DashboardTabs", () => {
 
 	it("タブクリックでパネルが切り替わる", async () => {
 		const user = userEvent.setup()
-		render(<DashboardTabs dashboardData={mockData} />)
+		render(
+			<ToastProvider>
+				<DashboardTabs dashboardData={mockData} />
+			</ToastProvider>,
+		)
 
 		await user.click(screen.getByRole("tab", { name: /予算マッピング/ }))
 
@@ -66,7 +82,11 @@ describe("DashboardTabs", () => {
 	})
 
 	it("サマリータブでサマリーパネルが表示される", () => {
-		render(<DashboardTabs dashboardData={mockData} />)
+		render(
+			<ToastProvider>
+				<DashboardTabs dashboardData={mockData} />
+			</ToastProvider>,
+		)
 
 		expect(screen.getByRole("tabpanel")).toBeInTheDocument()
 	})

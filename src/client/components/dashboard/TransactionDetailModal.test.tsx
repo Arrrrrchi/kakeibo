@@ -42,8 +42,11 @@ const mockMonthlyTrend = [
 
 vi.mock("@/server/actions/get-transactions-by-category", () => ({
 	getTransactionsByCategory: vi.fn(async () => ({
-		transactions: mockTransactions,
-		monthlyTrend: mockMonthlyTrend,
+		success: true,
+		data: {
+			transactions: mockTransactions,
+			monthlyTrend: mockMonthlyTrend,
+		},
 	})),
 }))
 
