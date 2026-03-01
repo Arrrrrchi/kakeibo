@@ -38,7 +38,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 				role="dialog"
 				aria-modal="true"
 				aria-label={title}
-				className="bg-white rounded-xl shadow-xl w-full max-w-lg mx-4 max-h-[80vh] flex flex-col"
+				className="bg-white rounded-xl shadow-xl w-[95vw] sm:w-full max-w-lg mx-auto max-h-[90vh] sm:max-h-[80vh] flex flex-col"
 				onClick={(e) => e.stopPropagation()}
 				onKeyDown={(e) => e.stopPropagation()}
 			>

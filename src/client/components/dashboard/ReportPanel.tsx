@@ -74,7 +74,10 @@ export function ReportPanel({ budgetReport, months }: ReportPanelProps) {
 								費目
 							</th>
 							{months.map((m) => (
-								<th key={m} className="px-4 py-3 text-right font-medium whitespace-nowrap">
+								<th
+									key={m}
+									className="px-4 py-3 text-right font-medium whitespace-nowrap min-w-[70px]"
+								>
 									{formatMonth(m)}
 								</th>
 							))}

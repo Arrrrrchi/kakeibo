@@ -28,7 +28,7 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 
 	return (
 		<div>
-			<div className="bg-white rounded-xl p-1 shadow-sm mb-6" role="tablist">
+			<div className="bg-white rounded-xl p-1 shadow-sm mb-6 flex overflow-x-auto" role="tablist">
 				{tabs.map((tab) => (
 					<button
 						key={tab.key}
@@ -36,7 +36,7 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 						role="tab"
 						aria-selected={activeTab === tab.key}
 						onClick={() => setActiveTab(tab.key)}
-						className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+						className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors whitespace-nowrap ${
 							activeTab === tab.key
 								? "bg-[#1a1a2e] text-white"
 								: "text-gray-600 hover:text-gray-900"
