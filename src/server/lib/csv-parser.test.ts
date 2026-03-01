@@ -214,7 +214,8 @@ describe("parseMoneyforwardCsv", () => {
 		it("ヘッダーがダブルクォートで囲まれた CSV をパースできる", async () => {
 			const header =
 				'"計算対象","日付","内容","金額（円）","保有金融機関","大項目","中項目","メモ","振替","ID"'
-			const dataLine = '"1","2025/04/30","東京電力","-12681","楽天カード","水道・光熱費","電気代","","0","test-id"'
+			const dataLine =
+				'"1","2025/04/30","東京電力","-12681","楽天カード","水道・光熱費","電気代","","0","test-id"'
 			const csv = Buffer.from(`${header}\r\n${dataLine}`, "utf-8")
 			const result = await parseMoneyforwardCsv(csv)
 
