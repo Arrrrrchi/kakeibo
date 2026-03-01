@@ -41,24 +41,26 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 	const total = grouped.reduce((sum, item) => sum + item.value, 0)
 
 	return (
-		<ResponsiveContainer width="100%" height={300}>
-			<PieChart>
-				<Pie
-					data={grouped}
-					cx="50%"
-					cy="50%"
-					innerRadius={60}
-					outerRadius={100}
-					dataKey="value"
-					label={({ name, value }) => `${name} ${formatPercent((value / total) * 100)}`}
-				>
-					{grouped.map((_, index) => (
-						<Cell key={`cell-${grouped[index].name}`} fill={COLORS[index % COLORS.length]} />
-					))}
-				</Pie>
-				<Tooltip formatter={(value) => formatCurrency(Number(value))} />
-				<Legend />
-			</PieChart>
-		</ResponsiveContainer>
+		<div aria-label="カテゴリ別支出チャート" role="img">
+			<ResponsiveContainer width="100%" height={300}>
+				<PieChart>
+					<Pie
+						data={grouped}
+						cx="50%"
+						cy="50%"
+						innerRadius={60}
+						outerRadius={100}
+						dataKey="value"
+						label={({ name, value }) => `${name} ${formatPercent((value / total) * 100)}`}
+					>
+						{grouped.map((_, index) => (
+							<Cell key={`cell-${grouped[index].name}`} fill={COLORS[index % COLORS.length]} />
+						))}
+					</Pie>
+					<Tooltip formatter={(value) => formatCurrency(Number(value))} />
+					<Legend />
+				</PieChart>
+			</ResponsiveContainer>
+		</div>
 	)
 }
