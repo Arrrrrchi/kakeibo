@@ -72,11 +72,13 @@ export default function Error({
 
 #### ページレベル
 
-- `src/app/dashboard/loading.tsx`（Phase 4 で作成済み）を充実させる
-- スケルトン UI:
-  - KPI カード × 4: グレーのパルスアニメーション付き矩形
-  - チャートエリア × 2: グレーの矩形
-  - タブバー: グレーの矩形
+- `src/app/dashboard/loading.tsx`（Phase 4 で作成済み）
+- スケルトン UI は Phase 4 で `KpiSkeleton` / `ChartSkeleton` コンポーネントとして実装済み:
+  - ヘッダー + CSVアップロードエリア
+  - タブバー
+  - KPI カード × 4: `animate-pulse` 付きパルスアニメーション
+  - チャートエリア × 2: `animate-pulse` 付きパルスアニメーション
+- Phase 6 では必要に応じて追加の調整を行う
 
 #### コンポーネントレベル
 

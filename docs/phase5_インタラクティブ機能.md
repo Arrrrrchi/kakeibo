@@ -210,6 +210,7 @@
 
 - 予算対比レポートを表示するパネル
 - props: `budgetReport: BudgetReportRow[]`, `months: string[]`
+- `months` は `DashboardData.monthlyTrend` から抽出する（`monthlyTrend.map(m => m.month)`）
 
 #### レイアウト
 
@@ -246,7 +247,28 @@
 - 総合計行: 全体の合計
 - テーブルは横スクロール対応（月数が多い場合）
 
-### 5-8. 月選択フィルター（オプション）
+### 5-8. DashboardTabs の接続
+
+Phase 4 で作成した `DashboardTabs` のプレースホルダーを実際のパネルに差し替える。
+
+```typescript
+// DashboardTabs.tsx 内のタブパネル切り替え部分を更新
+{activeTab === "mapping" && (
+  <MappingPanel
+    budgetItems={dashboardData.budgetItems}
+    allCategories={dashboardData.categoryBreakdown}
+    unmappedCategories={dashboardData.unmappedCategories}
+  />
+)}
+{activeTab === "report" && (
+  <ReportPanel
+    budgetReport={dashboardData.budgetReport}
+    months={dashboardData.monthlyTrend.map(m => m.month)}
+  />
+)}
+```
+
+### 5-9. 月選択フィルター（オプション）
 
 - ダッシュボードヘッダーまたはタブ内に月範囲のフィルターを設置
 - デフォルト: 取引データの全期間
