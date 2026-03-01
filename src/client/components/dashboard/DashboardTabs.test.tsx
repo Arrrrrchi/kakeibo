@@ -1,8 +1,38 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { createMockDashboardData } from "@/test/fixtures/mock-dashboard-data"
 import { DashboardTabs } from "./DashboardTabs"
+
+vi.mock("@/server/actions/update-mappings", () => ({
+	updateMappings: vi.fn(async () => ({ success: true })),
+}))
+
+vi.mock("@/server/actions/upsert-budget", () => ({
+	upsertBudget: vi.fn(async () => ({ success: true })),
+}))
+
+vi.mock("@/server/actions/delete-budget", () => ({
+	deleteBudget: vi.fn(async () => ({ success: true })),
+}))
+
+vi.mock("@/server/actions/get-transactions-by-category", () => ({
+	getTransactionsByCategory: vi.fn(async () => ({ transactions: [], monthlyTrend: [] })),
+}))
+
+vi.mock("recharts", () => ({
+	ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+	BarChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+	PieChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+	Bar: () => <div />,
+	Pie: () => <div />,
+	Cell: () => <div />,
+	XAxis: () => <div />,
+	YAxis: () => <div />,
+	CartesianGrid: () => <div />,
+	Tooltip: () => <div />,
+	Legend: () => <div />,
+}))
 
 const mockData = createMockDashboardData()
 
