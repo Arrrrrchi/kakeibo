@@ -2,9 +2,9 @@
 
 import { useState } from "react"
 import type { DashboardData } from "@/types/dashboard"
-import { SummaryPanel } from "./SummaryPanel"
 import { MappingPanel } from "./MappingPanel"
 import { ReportPanel } from "./ReportPanel"
+import { SummaryPanel } from "./SummaryPanel"
 
 type Tab = "summary" | "mapping" | "report"
 

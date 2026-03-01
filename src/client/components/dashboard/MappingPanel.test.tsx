@@ -1,9 +1,9 @@
-import { describe, expect, it, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { MappingPanel } from "./MappingPanel"
+import { describe, expect, it, vi } from "vitest"
 import type { BudgetItemWithMappings } from "@/types/budget"
 import type { CategoryBreakdown } from "@/types/transaction"
+import { MappingPanel } from "./MappingPanel"
 
 vi.mock("@/server/actions/update-mappings", () => ({
 	updateMappings: vi.fn(async () => ({ success: true })),
@@ -123,13 +123,7 @@ describe("MappingPanel", () => {
 	})
 
 	it("予算項目が空の場合もセクションが表示される", () => {
-		render(
-			<MappingPanel
-				budgetItems={[]}
-				allCategories={mockCategories}
-				unmappedCategories={[]}
-			/>,
-		)
+		render(<MappingPanel budgetItems={[]} allCategories={mockCategories} unmappedCategories={[]} />)
 		expect(screen.getByRole("button", { name: /予算を追加/ })).toBeInTheDocument()
 	})
 })

@@ -1,10 +1,10 @@
 "use client"
 
 import { useTransition } from "react"
+import { formatCurrency } from "@/client/lib/format"
+import { updateMappings } from "@/server/actions/update-mappings"
 import type { BudgetItemWithMappings } from "@/types/budget"
 import type { CategoryBreakdown } from "@/types/transaction"
-import { updateMappings } from "@/server/actions/update-mappings"
-import { formatCurrency } from "@/client/lib/format"
 import { CategoryChip } from "./CategoryChip"
 
 type BudgetItemCardProps = {
@@ -64,9 +64,7 @@ export function BudgetItemCard({
 						&#9998;
 					</button>
 				</div>
-				<span className="text-sm text-gray-600">
-					{formatCurrency(budgetItem.monthlyAmount)}/月
-				</span>
+				<span className="text-sm text-gray-600">{formatCurrency(budgetItem.monthlyAmount)}/月</span>
 			</div>
 			<div className="flex flex-wrap gap-1.5">
 				{allCategories.map((cat) => (

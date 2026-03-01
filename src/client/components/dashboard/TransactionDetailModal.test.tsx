@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest"
 import { render, screen, waitFor } from "@testing-library/react"
+import { describe, expect, it, vi } from "vitest"
 import { TransactionDetailModal } from "./TransactionDetailModal"
 
 const mockTransactions = [

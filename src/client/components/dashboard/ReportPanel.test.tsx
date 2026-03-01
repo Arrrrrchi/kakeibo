@@ -1,7 +1,7 @@
-import { describe, expect, it } from "vitest"
 import { render, screen } from "@testing-library/react"
-import { ReportPanel } from "./ReportPanel"
+import { describe, expect, it } from "vitest"
 import type { BudgetReportRow } from "@/types/dashboard"
+import { ReportPanel } from "./ReportPanel"
 
 const mockReportData: BudgetReportRow[] = [
 	{
