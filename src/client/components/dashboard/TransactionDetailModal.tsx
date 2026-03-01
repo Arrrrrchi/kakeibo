@@ -1,11 +1,11 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts"
-import type { Transaction } from "@/types/transaction"
-import { getTransactionsByCategory } from "@/server/actions/get-transactions-by-category"
-import { formatCurrency, formatMonth } from "@/client/lib/format"
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
 import { Modal } from "@/client/components/ui/Modal"
+import { formatCurrency, formatMonth } from "@/client/lib/format"
+import { getTransactionsByCategory } from "@/server/actions/get-transactions-by-category"
+import type { Transaction } from "@/types/transaction"
 
 type TransactionDetailModalProps = {
 	majorCategory: string
@@ -71,9 +71,7 @@ export function TransactionDetailModal({
 									<BarChart data={chartData}>
 										<XAxis dataKey="month" tick={{ fontSize: 11 }} />
 										<YAxis tick={{ fontSize: 11 }} />
-										<Tooltip
-											formatter={(value: number) => [formatCurrency(value), "支出"]}
-										/>
+										<Tooltip formatter={(value: number) => [formatCurrency(value), "支出"]} />
 										<Bar dataKey="total" fill="#2980b9" radius={[2, 2, 0, 0]} />
 									</BarChart>
 								</ResponsiveContainer>

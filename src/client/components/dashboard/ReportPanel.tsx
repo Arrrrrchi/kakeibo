@@ -1,7 +1,7 @@
 import { Fragment } from "react"
+import { formatCurrency, formatMonth } from "@/client/lib/format"
 import type { CycleType } from "@/generated/prisma/enums"
 import type { BudgetReportRow } from "@/types/dashboard"
-import { formatCurrency, formatMonth } from "@/client/lib/format"
 
 type ReportPanelProps = {
 	budgetReport: BudgetReportRow[]
@@ -102,9 +102,7 @@ export function ReportPanel({ budgetReport, months }: ReportPanelProps) {
 										</td>
 										{months.map((m) => (
 											<td key={m} className="px-4 py-3 text-right whitespace-nowrap">
-												{row.monthlyActuals[m]
-													? formatCurrency(row.monthlyActuals[m])
-													: "-"}
+												{row.monthlyActuals[m] ? formatCurrency(row.monthlyActuals[m]) : "-"}
 											</td>
 										))}
 										<td className="px-4 py-3 text-right font-medium whitespace-nowrap">
@@ -157,9 +155,7 @@ export function ReportPanel({ budgetReport, months }: ReportPanelProps) {
 								{formatCurrency(totalDifference)}
 							</td>
 							<td className="px-4 py-3 text-right whitespace-nowrap">
-								{totalBudget > 0
-									? `${((totalActual / totalBudget) * 100).toFixed(1)}%`
-									: "-"}
+								{totalBudget > 0 ? `${((totalActual / totalBudget) * 100).toFixed(1)}%` : "-"}
 							</td>
 						</tr>
 					</tbody>

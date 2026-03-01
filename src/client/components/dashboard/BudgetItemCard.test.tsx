@@ -1,9 +1,9 @@
-import { describe, expect, it, vi } from "vitest"
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
-import { BudgetItemCard } from "./BudgetItemCard"
+import { describe, expect, it, vi } from "vitest"
 import type { BudgetItemWithMappings } from "@/types/budget"
 import type { CategoryBreakdown } from "@/types/transaction"
+import { BudgetItemCard } from "./BudgetItemCard"
 
 vi.mock("@/server/actions/update-mappings", () => ({
 	updateMappings: vi.fn(async () => ({ success: true })),
@@ -66,7 +66,7 @@ describe("BudgetItemCard", () => {
 			/>,
 		)
 		const mappedChip = screen.getByText(/水道・光熱費 \/ 電気代/)
-		expect(mappedChip.closest("[role='button']")?.className).toContain("text-white")
+		expect(mappedChip.closest("button")?.className).toContain("text-white")
 	})
 
 	it("編集ボタンクリックで onEdit が呼ばれる", async () => {

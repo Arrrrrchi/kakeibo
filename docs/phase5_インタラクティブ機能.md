@@ -482,29 +482,36 @@ describe("ReportPanel", () => {
 
 ## 完了条件
 
-- [ ] 予算マッピングタブでカテゴリチップの選択/解除が動作し、DB に反映される
-- [ ] 未割当セクションにマッピングされていないカテゴリが正しく表示される
-- [ ] 未割当セクションの折りたたみ/展開が動作する
-- [ ] カテゴリチップクリックで取引詳細モーダルが開き、データが表示される
-- [ ] 予算フォームモーダルで新規作成・編集・削除が動作する
-- [ ] 予算対比レポートが正しい数値で表示される
-- [ ] 超過項目が赤色でハイライトされる
-- [ ] 全操作後に `revalidatePath` で画面が最新データに更新される
-- [ ] モーダルが ESC キー・オーバーレイクリックで閉じる
-- [ ] レスポンシブ: テーブルが横スクロール対応
-- [ ] CategoryChip のテスト（表示・選択状態・クリック）が通過
-- [ ] UnmappedSection のテスト（件数表示・折りたたみ・0件非表示）が通過
-- [ ] BudgetFormModal のテスト（新規/編集モード・バリデーション）が通過
-- [ ] ReportPanel のテスト（サマリー表示・超過ハイライト）が通過
+- [x] 予算マッピングタブでカテゴリチップの選択/解除が動作し、DB に反映される
+- [x] 未割当セクションにマッピングされていないカテゴリが正しく表示される
+- [x] 未割当セクションの折りたたみ/展開が動作する
+- [x] カテゴリチップクリックで取引詳細モーダルが開き、データが表示される
+- [x] 予算フォームモーダルで新規作成・編集・削除が動作する
+- [x] 予算対比レポートが正しい数値で表示される
+- [x] 超過項目が赤色でハイライトされる
+- [x] 全操作後に `revalidatePath` で画面が最新データに更新される
+- [x] モーダルが ESC キー・オーバーレイクリックで閉じる
+- [x] レスポンシブ: テーブルが横スクロール対応
+- [x] CategoryChip のテスト（表示・選択状態・クリック）が通過
+- [x] UnmappedSection のテスト（件数表示・折りたたみ・0件非表示）が通過
+- [x] BudgetFormModal のテスト（新規/編集モード・バリデーション）が通過
+- [x] ReportPanel のテスト（サマリー表示・超過ハイライト）が通過
 
 ## 成果物
 
 | ファイル | 説明 |
 |---|---|
 | `src/client/components/dashboard/MappingPanel.tsx` | 予算マッピングパネル |
+| `src/client/components/dashboard/MappingPanel.test.tsx` | MappingPanel テスト |
 | `src/client/components/dashboard/BudgetItemCard.tsx` | 予算項目カード |
+| `src/client/components/dashboard/BudgetItemCard.test.tsx` | BudgetItemCard テスト |
 | `src/client/components/dashboard/CategoryChip.tsx` | カテゴリチップ |
+| `src/client/components/dashboard/CategoryChip.test.tsx` | CategoryChip テスト |
 | `src/client/components/dashboard/UnmappedSection.tsx` | 未割当セクション |
+| `src/client/components/dashboard/UnmappedSection.test.tsx` | UnmappedSection テスト |
 | `src/client/components/dashboard/TransactionDetailModal.tsx` | 取引詳細モーダル |
+| `src/client/components/dashboard/TransactionDetailModal.test.tsx` | TransactionDetailModal テスト |
 | `src/client/components/dashboard/BudgetFormModal.tsx` | 予算フォームモーダル |
+| `src/client/components/dashboard/BudgetFormModal.test.tsx` | BudgetFormModal テスト |
 | `src/client/components/dashboard/ReportPanel.tsx` | 予算対比レポート |
+| `src/client/components/dashboard/ReportPanel.test.tsx` | ReportPanel テスト |
