@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { Button } from "@/client/components/ui/Button"
 import type { CycleType } from "@/generated/prisma/enums"
 import type { BudgetItemWithMappings } from "@/types/budget"
@@ -16,6 +16,12 @@ type MappingPanelProps = {
 	unmappedCategories: CategoryBreakdown[]
 }
 
+function sortByCategory(a: CategoryBreakdown, b: CategoryBreakdown): number {
+	const majorCmp = a.majorCategory.localeCompare(b.majorCategory, "ja")
+	if (majorCmp !== 0) return majorCmp
+	return a.minorCategory.localeCompare(b.minorCategory, "ja")
+}
+
 const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 	{ key: "monthly_fixed", label: "毎月・固定" },
 	{ key: "monthly_variable", label: "毎月・変動" },
@@ -28,6 +34,14 @@ export function MappingPanel({
 	allCategories,
 	unmappedCategories,
 }: MappingPanelProps) {
+	const sortedAllCategories = useMemo(
+		() => [...allCategories].sort(sortByCategory),
+		[allCategories],
+	)
+	const sortedUnmappedCategories = useMemo(
+		() => [...unmappedCategories].sort(sortByCategory),
+		[unmappedCategories],
+	)
 	const [editingItem, setEditingItem] = useState<BudgetItemWithMappings | undefined>(undefined)
 	const [showFormModal, setShowFormModal] = useState(false)
 	const [detailCategory, setDetailCategory] = useState<{
@@ -62,7 +76,7 @@ export function MappingPanel({
 	return (
 		<div>
 			<UnmappedSection
-				unmappedCategories={unmappedCategories}
+				unmappedCategories={sortedUnmappedCategories}
 				onCategoryClick={handleCategoryDetail}
 			/>
 
@@ -76,7 +90,7 @@ export function MappingPanel({
 							<BudgetItemCard
 								key={item.id}
 								budgetItem={item}
-								allCategories={allCategories}
+								allCategories={sortedAllCategories}
 								onEdit={handleEdit}
 								onCategoryDetail={handleCategoryDetail}
 							/>
