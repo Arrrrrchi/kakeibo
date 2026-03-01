@@ -55,6 +55,7 @@ next-env.d.ts
 
 # Claude Code
 .claude/settings.local.json
+.mcp.json
 
 # OS generated files
 .DS_Store

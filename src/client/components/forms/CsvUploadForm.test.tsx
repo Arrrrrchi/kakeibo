@@ -1,27 +1,36 @@
 import { render, screen } from "@testing-library/react"
 import userEvent from "@testing-library/user-event"
 import { describe, expect, it, vi } from "vitest"
+import { ToastProvider } from "@/client/components/ui/Toast"
 import { CsvUploadForm } from "./CsvUploadForm"
 
 vi.mock("@/server/actions/import-csv", () => ({
 	importCsv: vi.fn(),
 }))
 
+function renderWithToast() {
+	return render(
+		<ToastProvider>
+			<CsvUploadForm />
+		</ToastProvider>,
+	)
+}
+
 describe("CsvUploadForm", () => {
 	it("ファイル選択とアップロードボタンが表示される", () => {
-		render(<CsvUploadForm />)
+		renderWithToast()
 		expect(screen.getByLabelText(/CSV/)).toBeInTheDocument()
 		expect(screen.getByRole("button", { name: /アップロード/ })).toBeInTheDocument()
 	})
 
 	it("ファイル未選択時はアップロードボタンが無効", () => {
-		render(<CsvUploadForm />)
+		renderWithToast()
 		expect(screen.getByRole("button", { name: /アップロード/ })).toBeDisabled()
 	})
 
 	it("ファイル選択後にアップロードボタンが有効になる", async () => {
 		const user = userEvent.setup()
-		render(<CsvUploadForm />)
+		renderWithToast()
 
 		const file = new File(["test"], "test.csv", { type: "text/csv" })
 		const input = screen.getByLabelText(/CSV/)
@@ -34,11 +43,11 @@ describe("CsvUploadForm", () => {
 		const { importCsv } = await import("@/server/actions/import-csv")
 		vi.mocked(importCsv).mockResolvedValue({
 			success: true,
-			importedCount: 42,
+			data: { importedCount: 42 },
 		})
 
 		const user = userEvent.setup()
-		render(<CsvUploadForm />)
+		renderWithToast()
 
 		const file = new File(["test"], "test.csv", { type: "text/csv" })
 		await user.upload(screen.getByLabelText(/CSV/), file)
@@ -51,12 +60,11 @@ describe("CsvUploadForm", () => {
 		const { importCsv } = await import("@/server/actions/import-csv")
 		vi.mocked(importCsv).mockResolvedValue({
 			success: false,
-			importedCount: 0,
 			error: "ファイルが不正です",
 		})
 
 		const user = userEvent.setup()
-		render(<CsvUploadForm />)
+		renderWithToast()
 
 		const file = new File(["test"], "test.csv", { type: "text/csv" })
 		await user.upload(screen.getByLabelText(/CSV/), file)

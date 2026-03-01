@@ -66,17 +66,19 @@ export function StackedBarChart({ data, categoryData }: StackedBarChartProps) {
 	const { chartData, categories } = buildStackedData(data, categoryData)
 
 	return (
-		<ResponsiveContainer width="100%" height={350}>
-			<BarChart data={chartData}>
-				<CartesianGrid strokeDasharray="3 3" />
-				<XAxis dataKey="month" tick={{ fontSize: 12 }} />
-				<YAxis tickFormatter={(v: number) => formatCompactCurrency(v)} tick={{ fontSize: 12 }} />
-				<Tooltip formatter={(value) => formatCurrency(Number(value))} />
-				<Legend />
-				{categories.map((cat, index) => (
-					<Bar key={cat} dataKey={cat} stackId="a" fill={COLORS[index % COLORS.length]} />
-				))}
-			</BarChart>
-		</ResponsiveContainer>
+		<div aria-label="カテゴリ別月次推移チャート" role="img">
+			<ResponsiveContainer width="100%" height={350}>
+				<BarChart data={chartData}>
+					<CartesianGrid strokeDasharray="3 3" />
+					<XAxis dataKey="month" tick={{ fontSize: 12 }} />
+					<YAxis tickFormatter={(v: number) => formatCompactCurrency(v)} tick={{ fontSize: 12 }} />
+					<Tooltip formatter={(value) => formatCurrency(Number(value))} />
+					<Legend />
+					{categories.map((cat, index) => (
+						<Bar key={cat} dataKey={cat} stackId="a" fill={COLORS[index % COLORS.length]} />
+					))}
+				</BarChart>
+			</ResponsiveContainer>
+		</div>
 	)
 }

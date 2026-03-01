@@ -50,4 +50,9 @@ describe("Button", () => {
 		const button = screen.getByRole("button")
 		expect(button.className).toContain("px-3")
 	})
+
+	it("loading=true でスピナーが表示される", () => {
+		render(<Button loading>保存</Button>)
+		expect(screen.getByRole("button")).toContainElement(screen.getByTestId("spinner"))
+	})
 })
