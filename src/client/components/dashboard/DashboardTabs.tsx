@@ -1,0 +1,63 @@
+"use client"
+
+import { useState } from "react"
+import type { DashboardData } from "@/types/dashboard"
+import { SummaryPanel } from "./SummaryPanel"
+
+type Tab = "summary" | "mapping" | "report"
+
+type TabConfig = {
+	key: Tab
+	label: string
+}
+
+const tabs: TabConfig[] = [
+	{ key: "summary", label: "サマリー" },
+	{ key: "mapping", label: "予算マッピング" },
+	{ key: "report", label: "予算対比レポート" },
+]
+
+type DashboardTabsProps = {
+	dashboardData: DashboardData
+}
+
+export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
+	const [activeTab, setActiveTab] = useState<Tab>("summary")
+
+	return (
+		<div>
+			<div className="bg-white rounded-xl p-1 shadow-sm mb-6" role="tablist">
+				{tabs.map((tab) => (
+					<button
+						key={tab.key}
+						type="button"
+						role="tab"
+						aria-selected={activeTab === tab.key}
+						onClick={() => setActiveTab(tab.key)}
+						className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+							activeTab === tab.key
+								? "bg-[#1a1a2e] text-white"
+								: "text-gray-600 hover:text-gray-900"
+						}`}
+					>
+						{tab.label}
+					</button>
+				))}
+			</div>
+
+			<div role="tabpanel">
+				{activeTab === "summary" && <SummaryPanel data={dashboardData} />}
+				{activeTab === "mapping" && (
+					<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
+						予算マッピング（Phase 5 で実装）
+					</div>
+				)}
+				{activeTab === "report" && (
+					<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
+						予算対比レポート（Phase 5 で実装）
+					</div>
+				)}
+			</div>
+		</div>
+	)
+}
