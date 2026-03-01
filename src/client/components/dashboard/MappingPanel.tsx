@@ -34,7 +34,10 @@ export function MappingPanel({
 	allCategories,
 	unmappedCategories,
 }: MappingPanelProps) {
-	const sortedAllCategories = useMemo(() => [...allCategories].sort(sortByCategory), [allCategories])
+	const sortedAllCategories = useMemo(
+		() => [...allCategories].sort(sortByCategory),
+		[allCategories],
+	)
 	const sortedUnmappedCategories = useMemo(
 		() => [...unmappedCategories].sort(sortByCategory),
 		[unmappedCategories],
