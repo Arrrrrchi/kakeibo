@@ -21,6 +21,11 @@ export async function importCsv(
 	try {
 		const buffer = Buffer.from(await file.arrayBuffer())
 		const transactions = await parseMoneyforwardCsv(buffer)
+
+		if (transactions.length === 0) {
+			return { success: false, error: "インポートできるデータがありませんでした" }
+		}
+
 		const usecase = new ImportTransactionsUsecase(new PrismaTransactionRepository())
 		const importedCount = await usecase.execute(transactions)
 
