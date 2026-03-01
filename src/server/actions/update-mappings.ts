@@ -3,19 +3,19 @@
 import { revalidatePath } from "next/cache"
 import { PrismaMappingRepository } from "@/server/repositories/prisma-mapping.repository"
 import { UpdateMappingUsecase } from "@/server/usecases/update-mapping.usecase"
-
-type UpdateMappingsResult = {
-	success: boolean
-	error?: string
-}
+import type { ActionResult } from "@/types/action"
 
 export async function updateMappings(
 	budgetItemId: string,
 	categories: { majorCategory: string; minorCategory: string }[],
-): Promise<UpdateMappingsResult> {
-	const usecase = new UpdateMappingUsecase(new PrismaMappingRepository())
-	await usecase.execute(budgetItemId, categories)
+): Promise<ActionResult> {
+	try {
+		const usecase = new UpdateMappingUsecase(new PrismaMappingRepository())
+		await usecase.execute(budgetItemId, categories)
 
-	revalidatePath("/dashboard")
-	return { success: true }
+		revalidatePath("/dashboard")
+		return { success: true, data: undefined }
+	} catch {
+		return { success: false, error: "マッピングの更新に失敗しました" }
+	}
 }

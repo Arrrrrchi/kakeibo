@@ -4,11 +4,7 @@ import { revalidatePath } from "next/cache"
 import type { CycleType } from "@/generated/prisma/enums"
 import { PrismaBudgetRepository } from "@/server/repositories/prisma-budget.repository"
 import { ManageBudgetUsecase } from "@/server/usecases/manage-budget.usecase"
-
-type UpsertBudgetResult = {
-	success: boolean
-	error?: string
-}
+import type { ActionResult } from "@/types/action"
 
 const VALID_CYCLE_TYPES: CycleType[] = [
 	"monthly_fixed",
@@ -17,7 +13,7 @@ const VALID_CYCLE_TYPES: CycleType[] = [
 	"irregular_variable",
 ]
 
-export async function upsertBudget(formData: FormData): Promise<UpsertBudgetResult> {
+export async function upsertBudget(formData: FormData): Promise<ActionResult> {
 	const id = formData.get("id") as string | null
 	const name = (formData.get("name") as string).trim()
 	const monthlyAmount = Number(formData.get("monthlyAmount"))
@@ -33,14 +29,18 @@ export async function upsertBudget(formData: FormData): Promise<UpsertBudgetResu
 		return { success: false, error: "無効な周期タイプです" }
 	}
 
-	const usecase = new ManageBudgetUsecase(new PrismaBudgetRepository())
+	try {
+		const usecase = new ManageBudgetUsecase(new PrismaBudgetRepository())
 
-	if (id) {
-		await usecase.updateBudget(id, { name, monthlyAmount, cycleType })
-	} else {
-		await usecase.createBudget({ name, monthlyAmount, cycleType })
+		if (id) {
+			await usecase.updateBudget(id, { name, monthlyAmount, cycleType })
+		} else {
+			await usecase.createBudget({ name, monthlyAmount, cycleType })
+		}
+
+		revalidatePath("/dashboard")
+		return { success: true, data: undefined }
+	} catch {
+		return { success: false, error: "データの保存に失敗しました" }
 	}
-
-	revalidatePath("/dashboard")
-	return { success: true }
 }

@@ -2,22 +2,17 @@
 
 import { type ChangeEvent, type FormEvent, useRef, useState, useTransition } from "react"
 import { Button } from "@/client/components/ui/Button"
+import { useToast } from "@/client/components/ui/Toast"
 import { importCsv } from "@/server/actions/import-csv"
-
-type UploadResult = {
-	success: boolean
-	message: string
-}
 
 export function CsvUploadForm() {
 	const [file, setFile] = useState<File | null>(null)
-	const [result, setResult] = useState<UploadResult | null>(null)
 	const [isPending, startTransition] = useTransition()
 	const fileInputRef = useRef<HTMLInputElement>(null)
+	const { showToast } = useToast()
 
 	const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
 		setFile(e.target.files?.[0] ?? null)
-		setResult(null)
 	}
 
 	const handleSubmit = (e: FormEvent) => {
@@ -30,11 +25,11 @@ export function CsvUploadForm() {
 			const res = await importCsv(formData)
 
 			if (res.success) {
-				setResult({ success: true, message: `${res.importedCount}件インポートしました` })
+				showToast(`${res.data.importedCount}件インポートしました`, "success")
 				setFile(null)
 				if (fileInputRef.current) fileInputRef.current.value = ""
 			} else {
-				setResult({ success: false, message: res.error ?? "インポートに失敗しました" })
+				showToast(res.error, "error")
 			}
 		})
 	}
@@ -57,11 +52,6 @@ export function CsvUploadForm() {
 			<Button type="submit" disabled={!file || isPending}>
 				{isPending ? "アップロード中..." : "アップロード"}
 			</Button>
-			{result && (
-				<p className={`text-sm ${result.success ? "text-green-600" : "text-red-600"}`}>
-					{result.message}
-				</p>
-			)}
 		</form>
 	)
 }
