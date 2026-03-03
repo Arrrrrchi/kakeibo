@@ -20,7 +20,7 @@ export async function parseMoneyforwardCsv(buffer: Buffer): Promise<TransactionC
 
 		const row = parseLine(line, headers)
 		if (!row) continue
-		if (!row.isCalculationTarget || row.isTransfer) continue
+		if (!row.isCalculationTarget && !row.isTransfer) continue
 
 		const isIncome = row.amount > 0
 
@@ -34,6 +34,7 @@ export async function parseMoneyforwardCsv(buffer: Buffer): Promise<TransactionC
 			memo: row.memo || null,
 			moneyforwardId: row.moneyforwardId || null,
 			isIncome,
+			isTransfer: row.isTransfer,
 			importHash: generateHash(row),
 		})
 	}

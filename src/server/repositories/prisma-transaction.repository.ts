@@ -30,6 +30,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 				COALESCE(SUM(CASE WHEN is_income = true THEN amount ELSE 0 END), 0) AS total_income,
 				COALESCE(SUM(CASE WHEN is_income = false THEN amount ELSE 0 END), 0) AS total_expense
 			FROM transactions
+			WHERE is_transfer = false
 			GROUP BY to_char(date, 'YYYY-MM')
 			ORDER BY month
 		`
@@ -56,7 +57,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 				SUM(amount) AS total,
 				COUNT(*) AS count
 			FROM transactions
-			WHERE is_income = false
+			WHERE is_income = false AND is_transfer = false
 			GROUP BY major_category, minor_category
 			ORDER BY total DESC
 		`
@@ -101,6 +102,27 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 			FROM transactions
 			WHERE major_category = ${majorCategory}
 				AND minor_category = ${minorCategory}
+			GROUP BY to_char(date, 'YYYY-MM')
+			ORDER BY month
+		`
+
+		return results.map((r) => ({
+			month: r.month,
+			total: Number(r.total),
+		}))
+	}
+
+	async getMonthlyInvestmentTransferTrend(
+		descriptionPrefix: string,
+	): Promise<{ month: string; total: number }[]> {
+		const pattern = `${descriptionPrefix}%`
+		const results = await prisma.$queryRaw<{ month: string; total: bigint }[]>`
+			SELECT
+				to_char(date, 'YYYY-MM') AS month,
+				SUM(amount) AS total
+			FROM transactions
+			WHERE is_transfer = true
+				AND description LIKE ${pattern}
 			GROUP BY to_char(date, 'YYYY-MM')
 			ORDER BY month
 		`

@@ -11,6 +11,7 @@ export function createMockTransactionRepository(): ITransactionRepository {
 		findByCategory: vi.fn().mockResolvedValue([]),
 		getDistinctCategories: vi.fn().mockResolvedValue([]),
 		getMonthlyTrendByCategory: vi.fn().mockResolvedValue([]),
+		getMonthlyInvestmentTransferTrend: vi.fn().mockResolvedValue([]),
 	}
 }
 

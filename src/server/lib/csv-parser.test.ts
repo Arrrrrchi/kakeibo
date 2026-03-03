@@ -150,24 +150,70 @@ describe("parseMoneyforwardCsv", () => {
 	})
 
 	describe("フィルタリング", () => {
-		it("振替行を除外する", async () => {
+		it("振替行を isTransfer: true として保存する（計算対象=1）", async () => {
 			const csv = createTestCsv([
 				{
 					date: "2025/04/01",
-					description: "振替",
+					description: "振替 SBI証券 (20250401012345678)",
 					amount: -50000,
-					major: "食費",
-					minor: "共同生活費",
+					major: "振替",
+					minor: "振替",
 					calc: 1,
 					transfer: 1,
+					institution: "住信SBIネット銀行",
+					id: "mf-transfer-001",
 				},
 			])
 			const result = await parseMoneyforwardCsv(csv)
 
-			expect(result).toHaveLength(0)
+			expect(result).toHaveLength(1)
+			expect(result[0].isTransfer).toBe(true)
+			expect(result[0].amount).toBe(50000)
+			expect(result[0].description).toBe("振替 SBI証券 (20250401012345678)")
 		})
 
-		it("計算対象外を除外する", async () => {
+		it("振替行を isTransfer: true として保存する（計算対象=0の場合も）", async () => {
+			const csv = createTestCsv([
+				{
+					date: "2025/05/01",
+					description: "振替 SBI証券 (20250501012345678)",
+					amount: -50000,
+					major: "振替",
+					minor: "振替",
+					calc: 0,
+					transfer: 1,
+					institution: "住信SBIネット銀行",
+					id: "mf-transfer-002",
+				},
+			])
+			const result = await parseMoneyforwardCsv(csv)
+
+			expect(result).toHaveLength(1)
+			expect(result[0].isTransfer).toBe(true)
+			expect(result[0].amount).toBe(50000)
+		})
+
+		it("通常行は isTransfer: false で保存する", async () => {
+			const csv = createTestCsv([
+				{
+					date: "2025/04/15",
+					description: "東京電力",
+					amount: -8500,
+					major: "水道・光熱費",
+					minor: "電気代",
+					calc: 1,
+					transfer: 0,
+					institution: "三井住友銀行",
+					id: "mf001",
+				},
+			])
+			const result = await parseMoneyforwardCsv(csv)
+
+			expect(result).toHaveLength(1)
+			expect(result[0].isTransfer).toBe(false)
+		})
+
+		it("計算対象外かつ振替でない行を除外する", async () => {
 			const csv = createTestCsv([
 				{
 					date: "2025/04/01",

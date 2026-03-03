@@ -2,7 +2,7 @@ import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-
 import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface"
 import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface"
 import type { BudgetItemWithMappings } from "@/types/budget"
-import type { BudgetReportRow, DashboardData, KpiSummary } from "@/types/dashboard"
+import type { BudgetReportRow, DashboardData, InvestmentRow, KpiSummary } from "@/types/dashboard"
 import type { CategoryBreakdown, MonthlyAggregation } from "@/types/transaction"
 
 export class GetDashboardSummaryUsecase {
@@ -21,7 +21,10 @@ export class GetDashboardSummaryUsecase {
 
 		const kpiSummary = this.calculateKpi(monthlyTrend)
 		const unmappedCategories = this.findUnmappedCategories(categoryBreakdown, budgetItems)
-		const budgetReport = await this.buildBudgetReport(budgetItems, monthlyTrend)
+		const [budgetReport, investmentRow] = await Promise.all([
+			this.buildBudgetReport(budgetItems, monthlyTrend),
+			this.buildInvestmentRow(),
+		])
 
 		return {
 			kpiSummary,
@@ -30,6 +33,7 @@ export class GetDashboardSummaryUsecase {
 			budgetItems,
 			unmappedCategories,
 			budgetReport,
+			investmentRow,
 		}
 	}
 
@@ -59,6 +63,17 @@ export class GetDashboardSummaryUsecase {
 		}
 
 		return categoryBreakdown.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`))
+	}
+
+	private async buildInvestmentRow(): Promise<InvestmentRow> {
+		const trend = await this.transactionRepository.getMonthlyInvestmentTransferTrend("SBI証券")
+		const monthlyActuals: Record<string, number> = {}
+		let totalActual = 0
+		for (const entry of trend) {
+			monthlyActuals[entry.month] = entry.total
+			totalActual += entry.total
+		}
+		return { label: "投信積立 (SBI証券)", monthlyActuals, totalActual }
 	}
 
 	private async buildBudgetReport(
