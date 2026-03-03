@@ -1,11 +1,12 @@
 import { Fragment } from "react"
 import { formatCurrency, formatMonth } from "@/client/lib/format"
 import type { CycleType } from "@/generated/prisma/enums"
-import type { BudgetReportRow } from "@/types/dashboard"
+import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard"
 
 type ReportPanelProps = {
 	budgetReport: BudgetReportRow[]
 	months: string[]
+	investmentRow: InvestmentRow
 }
 
 const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
@@ -15,7 +16,7 @@ const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 	{ key: "irregular_variable", label: "不定期・変動" },
 ]
 
-export function ReportPanel({ budgetReport, months }: ReportPanelProps) {
+export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanelProps) {
 	if (budgetReport.length === 0) {
 		return (
 			<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
@@ -160,6 +161,24 @@ export function ReportPanel({ budgetReport, months }: ReportPanelProps) {
 							<td className="px-4 py-3 text-right whitespace-nowrap">
 								{totalBudget > 0 ? `${((totalActual / totalBudget) * 100).toFixed(1)}%` : "-"}
 							</td>
+						</tr>
+						<tr className="border-t-2 bg-blue-50">
+							<td className="sticky left-0 bg-blue-50 px-4 py-3 font-medium whitespace-nowrap">
+								{investmentRow.label}
+							</td>
+							{months.map((m) => (
+								<td key={m} className="px-4 py-3 text-right whitespace-nowrap">
+									{investmentRow.monthlyActuals[m]
+										? formatCurrency(investmentRow.monthlyActuals[m])
+										: "-"}
+								</td>
+							))}
+							<td className="px-4 py-3 text-right font-medium whitespace-nowrap">
+								{investmentRow.totalActual > 0 ? formatCurrency(investmentRow.totalActual) : "-"}
+							</td>
+							<td className="px-4 py-3 text-right whitespace-nowrap">-</td>
+							<td className="px-4 py-3 text-right whitespace-nowrap">-</td>
+							<td className="px-4 py-3 text-right whitespace-nowrap">-</td>
 						</tr>
 					</tbody>
 				</table>

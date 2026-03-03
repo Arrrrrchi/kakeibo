@@ -80,6 +80,36 @@ describe("GetDashboardSummaryUsecase", () => {
 		expect(result.unmappedCategories[0].minorCategory).toBe("外食")
 	})
 
+	it("投信積立行の月次実績を正しく集計する", async () => {
+		const { usecase, transactionRepo } = createUsecase()
+		vi.mocked(transactionRepo.getMonthlyAggregation).mockResolvedValue([
+			{ month: "2025-04", totalIncome: 300000, totalExpense: 200000 },
+			{ month: "2025-05", totalIncome: 300000, totalExpense: 250000 },
+		])
+		vi.mocked(transactionRepo.getCategoryBreakdown).mockResolvedValue([])
+		vi.mocked(transactionRepo.getMonthlyInvestmentTransferTrend).mockResolvedValue([
+			{ month: "2025-04", total: 50000 },
+			{ month: "2025-05", total: 50000 },
+		])
+
+		const result = await usecase.execute()
+
+		expect(result.investmentRow.monthlyActuals).toEqual({
+			"2025-04": 50000,
+			"2025-05": 50000,
+		})
+		expect(result.investmentRow.totalActual).toBe(100000)
+	})
+
+	it("投信積立データがない場合は空の investmentRow を返す", async () => {
+		const { usecase } = createUsecase()
+
+		const result = await usecase.execute()
+
+		expect(result.investmentRow.monthlyActuals).toEqual({})
+		expect(result.investmentRow.totalActual).toBe(0)
+	})
+
 	it("予算対比レポートの差額と達成率を正しく計算する", async () => {
 		const { usecase, transactionRepo, budgetRepo } = createUsecase()
 		vi.mocked(transactionRepo.getMonthlyAggregation).mockResolvedValue([

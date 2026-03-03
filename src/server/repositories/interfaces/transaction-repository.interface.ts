@@ -15,4 +15,7 @@ export type ITransactionRepository = {
 		majorCategory: string,
 		minorCategory: string,
 	): Promise<{ month: string; total: number }[]>
+	getMonthlyInvestmentTransferTrend(
+		descriptionPrefix: string,
+	): Promise<{ month: string; total: number }[]>
 }

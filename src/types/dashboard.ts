@@ -18,6 +18,12 @@ export type BudgetReportRow = {
 	achievementRate: number
 }
 
+export type InvestmentRow = {
+	label: string
+	monthlyActuals: Record<string, number>
+	totalActual: number
+}
+
 export type DashboardData = {
 	kpiSummary: KpiSummary
 	monthlyTrend: MonthlyAggregation[]
@@ -25,4 +31,5 @@ export type DashboardData = {
 	budgetItems: BudgetItemWithMappings[]
 	unmappedCategories: CategoryBreakdown[]
 	budgetReport: BudgetReportRow[]
+	investmentRow: InvestmentRow
 }

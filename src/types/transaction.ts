@@ -12,6 +12,7 @@ export type TransactionCreateInput = {
 	memo: string | null
 	moneyforwardId: string | null
 	isIncome: boolean
+	isTransfer: boolean
 	importHash: string
 }
 

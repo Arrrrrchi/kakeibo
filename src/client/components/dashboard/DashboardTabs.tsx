@@ -60,6 +60,7 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 					<ReportPanel
 						budgetReport={dashboardData.budgetReport}
 						months={dashboardData.monthlyTrend.map((m) => m.month)}
+						investmentRow={dashboardData.investmentRow}
 					/>
 				)}
 			</div>

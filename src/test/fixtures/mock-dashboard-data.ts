@@ -22,6 +22,7 @@ export function createMockDashboardData(overrides?: Partial<DashboardData>): Das
 		budgetItems: [],
 		unmappedCategories: [],
 		budgetReport: [],
+		investmentRow: { label: "投信積立 (SBI証券)", monthlyActuals: {}, totalActual: 0 },
 		...overrides,
 	}
 }
