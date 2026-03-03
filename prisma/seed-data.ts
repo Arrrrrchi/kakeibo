@@ -1,12 +1,12 @@
-import type { CycleType } from "@/generated/prisma/enums"
+import type { CycleType } from "@/generated/prisma/enums";
 
 export type SeedItem = {
-	name: string
-	monthlyAmount: number
-	cycleType: CycleType
-	sortOrder: number
-	mappings: { majorCategory: string; minorCategory: string }[]
-}
+	name: string;
+	monthlyAmount: number;
+	cycleType: CycleType;
+	sortOrder: number;
+	mappings: { majorCategory: string; minorCategory: string }[];
+};
 
 export const seedData: SeedItem[] = [
 	// 毎月・固定
@@ -270,4 +270,4 @@ export const seedData: SeedItem[] = [
 		sortOrder: 7,
 		mappings: [],
 	},
-]
+];

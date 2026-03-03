@@ -1,10 +1,10 @@
-import { describe, expect, it, vi } from "vitest"
+import { describe, expect, it, vi } from "vitest";
 import {
 	createMockBudgetRepository,
 	createMockTransactionRepository,
-} from "@/test/helpers/mock-repositories"
-import type { BudgetItemWithMappings } from "@/types/budget"
-import { GetBudgetDetailUsecase } from "./get-budget-detail.usecase"
+} from "@/test/helpers/mock-repositories";
+import type { BudgetItemWithMappings } from "@/types/budget";
+import { GetBudgetDetailUsecase } from "./get-budget-detail.usecase";
 
 const budgetItem: BudgetItemWithMappings = {
 	id: "budget-1",
@@ -23,42 +23,42 @@ const budgetItem: BudgetItemWithMappings = {
 			createdAt: new Date(),
 		},
 	],
-}
+};
 
 describe("GetBudgetDetailUsecase", () => {
 	it("予算項目と関連取引を返す", async () => {
-		const budgetRepo = createMockBudgetRepository()
-		const transactionRepo = createMockTransactionRepository()
-		vi.mocked(budgetRepo.findById).mockResolvedValue(budgetItem)
-		vi.mocked(transactionRepo.findByCategory).mockResolvedValue([])
+		const budgetRepo = createMockBudgetRepository();
+		const transactionRepo = createMockTransactionRepository();
+		vi.mocked(budgetRepo.findById).mockResolvedValue(budgetItem);
+		vi.mocked(transactionRepo.findByCategory).mockResolvedValue([]);
 
-		const usecase = new GetBudgetDetailUsecase(budgetRepo, transactionRepo)
-		const result = await usecase.execute("budget-1")
+		const usecase = new GetBudgetDetailUsecase(budgetRepo, transactionRepo);
+		const result = await usecase.execute("budget-1");
 
-		expect(result).not.toBeNull()
-		expect(result?.budgetItem.name).toBe("電気代")
-		expect(budgetRepo.findById).toHaveBeenCalledWith("budget-1")
-	})
+		expect(result).not.toBeNull();
+		expect(result?.budgetItem.name).toBe("電気代");
+		expect(budgetRepo.findById).toHaveBeenCalledWith("budget-1");
+	});
 
 	it("存在しない予算項目の場合は null を返す", async () => {
-		const budgetRepo = createMockBudgetRepository()
-		const transactionRepo = createMockTransactionRepository()
+		const budgetRepo = createMockBudgetRepository();
+		const transactionRepo = createMockTransactionRepository();
 
-		const usecase = new GetBudgetDetailUsecase(budgetRepo, transactionRepo)
-		const result = await usecase.execute("nonexistent")
+		const usecase = new GetBudgetDetailUsecase(budgetRepo, transactionRepo);
+		const result = await usecase.execute("nonexistent");
 
-		expect(result).toBeNull()
-	})
+		expect(result).toBeNull();
+	});
 
 	it("マッピングされた全カテゴリの取引を取得する", async () => {
-		const budgetRepo = createMockBudgetRepository()
-		const transactionRepo = createMockTransactionRepository()
-		vi.mocked(budgetRepo.findById).mockResolvedValue(budgetItem)
-		vi.mocked(transactionRepo.findByCategory).mockResolvedValue([])
+		const budgetRepo = createMockBudgetRepository();
+		const transactionRepo = createMockTransactionRepository();
+		vi.mocked(budgetRepo.findById).mockResolvedValue(budgetItem);
+		vi.mocked(transactionRepo.findByCategory).mockResolvedValue([]);
 
-		const usecase = new GetBudgetDetailUsecase(budgetRepo, transactionRepo)
-		await usecase.execute("budget-1")
+		const usecase = new GetBudgetDetailUsecase(budgetRepo, transactionRepo);
+		await usecase.execute("budget-1");
 
-		expect(transactionRepo.findByCategory).toHaveBeenCalledWith("水道・光熱費", "電気代")
-	})
-})
+		expect(transactionRepo.findByCategory).toHaveBeenCalledWith("水道・光熱費", "電気代");
+	});
+});

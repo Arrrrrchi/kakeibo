@@ -1,12 +1,12 @@
-import type { BudgetCategoryMapping } from "@/types/budget"
+import type { BudgetCategoryMapping } from "@/types/budget";
 
 export type IMappingRepository = {
-	findByBudgetItemId(budgetItemId: string): Promise<BudgetCategoryMapping[]>
+	findByBudgetItemId(budgetItemId: string): Promise<BudgetCategoryMapping[]>;
 	replaceAll(
 		budgetItemId: string,
 		categories: { majorCategory: string; minorCategory: string }[],
-	): Promise<void>
+	): Promise<void>;
 	findUnmappedCategories(
 		allCategories: { majorCategory: string; minorCategory: string }[],
-	): Promise<{ majorCategory: string; minorCategory: string }[]>
-}
+	): Promise<{ majorCategory: string; minorCategory: string }[]>;
+};

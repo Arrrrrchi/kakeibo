@@ -1,17 +1,17 @@
-"use client"
+"use client";
 
 type SelectOption = {
-	value: string
-	label: string
-}
+	value: string;
+	label: string;
+};
 
 type SelectProps = {
-	label: string
-	options: SelectOption[]
-	value: string
-	onChange: (value: string) => void
-	className?: string
-}
+	label: string;
+	options: SelectOption[];
+	value: string;
+	onChange: (value: string) => void;
+	className?: string;
+};
 
 export function Select({ label, options, value, onChange, className = "" }: SelectProps) {
 	return (
@@ -31,5 +31,5 @@ export function Select({ label, options, value, onChange, className = "" }: Sele
 				</select>
 			</label>
 		</div>
-	)
+	);
 }

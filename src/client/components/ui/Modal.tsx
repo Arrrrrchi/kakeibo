@@ -1,63 +1,63 @@
-"use client"
+"use client";
 
-import { type ReactNode, useCallback, useEffect, useRef } from "react"
+import { type ReactNode, useCallback, useEffect, useRef } from "react";
 
 type ModalProps = {
-	isOpen: boolean
-	onClose: () => void
-	title: string
-	children: ReactNode
-}
+	isOpen: boolean;
+	onClose: () => void;
+	title: string;
+	children: ReactNode;
+};
 
 export function Modal({ isOpen, onClose, title, children }: ModalProps) {
-	const dialogRef = useRef<HTMLDivElement>(null)
+	const dialogRef = useRef<HTMLDivElement>(null);
 
 	const handleKeyDown = useCallback(
 		(e: KeyboardEvent) => {
 			if (e.key === "Escape") {
-				onClose()
-				return
+				onClose();
+				return;
 			}
 
 			if (e.key === "Tab" && dialogRef.current) {
 				const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
 					'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-				)
-				if (focusable.length === 0) return
+				);
+				if (focusable.length === 0) return;
 
-				const first = focusable[0]
-				const last = focusable[focusable.length - 1]
+				const first = focusable[0];
+				const last = focusable[focusable.length - 1];
 
 				if (e.shiftKey && document.activeElement === first) {
-					e.preventDefault()
-					last.focus()
+					e.preventDefault();
+					last.focus();
 				} else if (!e.shiftKey && document.activeElement === last) {
-					e.preventDefault()
-					first.focus()
+					e.preventDefault();
+					first.focus();
 				}
 			}
 		},
 		[onClose],
-	)
+	);
 
 	useEffect(() => {
-		if (!isOpen) return
+		if (!isOpen) return;
 
-		document.addEventListener("keydown", handleKeyDown, true)
+		document.addEventListener("keydown", handleKeyDown, true);
 
-		const previousFocus = document.activeElement as HTMLElement | null
+		const previousFocus = document.activeElement as HTMLElement | null;
 		const focusable = dialogRef.current?.querySelectorAll<HTMLElement>(
 			'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-		)
-		focusable?.[0]?.focus()
+		);
+		focusable?.[0]?.focus();
 
 		return () => {
-			document.removeEventListener("keydown", handleKeyDown, true)
-			previousFocus?.focus()
-		}
-	}, [isOpen, handleKeyDown])
+			document.removeEventListener("keydown", handleKeyDown, true);
+			previousFocus?.focus();
+		};
+	}, [isOpen, handleKeyDown]);
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
 	return (
 		// biome-ignore lint/a11y/noStaticElementInteractions: overlay click to close is standard modal UX
@@ -90,5 +90,5 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 				<div className="px-5 py-4 overflow-y-auto">{children}</div>
 			</div>
 		</div>
-	)
+	);
 }

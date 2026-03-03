@@ -1,14 +1,14 @@
 type Column = {
-	key: string
-	header: string
-	className?: string
-}
+	key: string;
+	header: string;
+	className?: string;
+};
 
 type TableProps = {
-	columns: Column[]
-	data: Record<string, string | number>[]
-	className?: string
-}
+	columns: Column[];
+	data: Record<string, string | number>[];
+	className?: string;
+};
 
 export function Table({ columns, data, className = "" }: TableProps) {
 	return (
@@ -42,5 +42,5 @@ export function Table({ columns, data, className = "" }: TableProps) {
 				</tbody>
 			</table>
 		</div>
-	)
+	);
 }

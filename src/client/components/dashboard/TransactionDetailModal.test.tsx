@@ -1,6 +1,6 @@
-import { render, screen, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
-import { TransactionDetailModal } from "./TransactionDetailModal"
+import { render, screen, waitFor } from "@testing-library/react";
+import { describe, expect, it, vi } from "vitest";
+import { TransactionDetailModal } from "./TransactionDetailModal";
 
 const mockTransactions = [
 	{
@@ -33,12 +33,12 @@ const mockTransactions = [
 		createdAt: new Date(),
 		updatedAt: new Date(),
 	},
-]
+];
 
 const mockMonthlyTrend = [
 	{ month: "2025-04", total: 8500 },
 	{ month: "2025-05", total: 9200 },
-]
+];
 
 vi.mock("@/server/actions/get-transactions-by-category", () => ({
 	getTransactionsByCategory: vi.fn(async () => ({
@@ -48,7 +48,7 @@ vi.mock("@/server/actions/get-transactions-by-category", () => ({
 			monthlyTrend: mockMonthlyTrend,
 		},
 	})),
-}))
+}));
 
 vi.mock("recharts", () => ({
 	ResponsiveContainer: ({ children }: { children: React.ReactNode }) => (
@@ -61,7 +61,7 @@ vi.mock("recharts", () => ({
 	XAxis: () => <div data-testid="x-axis" />,
 	YAxis: () => <div data-testid="y-axis" />,
 	Tooltip: () => <div data-testid="tooltip" />,
-}))
+}));
 
 describe("TransactionDetailModal", () => {
 	it("モーダルタイトルにカテゴリ名が表示される", async () => {
@@ -72,9 +72,9 @@ describe("TransactionDetailModal", () => {
 				isOpen={true}
 				onClose={vi.fn()}
 			/>,
-		)
-		expect(screen.getByText("水道・光熱費 / 電気代")).toBeInTheDocument()
-	})
+		);
+		expect(screen.getByText("水道・光熱費 / 電気代")).toBeInTheDocument();
+	});
 
 	it("取引データが読み込まれ統計が表示される", async () => {
 		render(
@@ -84,12 +84,12 @@ describe("TransactionDetailModal", () => {
 				isOpen={true}
 				onClose={vi.fn()}
 			/>,
-		)
+		);
 
 		await waitFor(() => {
-			expect(screen.getByText(/合計/)).toBeInTheDocument()
-		})
-	})
+			expect(screen.getByText(/合計/)).toBeInTheDocument();
+		});
+	});
 
 	it("取引一覧が表示される", async () => {
 		render(
@@ -99,12 +99,12 @@ describe("TransactionDetailModal", () => {
 				isOpen={true}
 				onClose={vi.fn()}
 			/>,
-		)
+		);
 
 		await waitFor(() => {
-			expect(screen.getAllByText("東京電力")).toHaveLength(2)
-		})
-	})
+			expect(screen.getAllByText("東京電力")).toHaveLength(2);
+		});
+	});
 
 	it("isOpen=false の場合は何も表示しない", () => {
 		render(
@@ -114,7 +114,7 @@ describe("TransactionDetailModal", () => {
 				isOpen={false}
 				onClose={vi.fn()}
 			/>,
-		)
-		expect(screen.queryByText("水道・光熱費 / 電気代")).not.toBeInTheDocument()
-	})
-})
+		);
+		expect(screen.queryByText("水道・光熱費 / 電気代")).not.toBeInTheDocument();
+	});
+});

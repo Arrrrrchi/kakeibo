@@ -1,7 +1,7 @@
-import { describe, expect, it, vi } from "vitest"
-import { createMockTransactionRepository } from "@/test/helpers/mock-repositories"
-import type { TransactionCreateInput } from "@/types/transaction"
-import { ImportTransactionsUsecase } from "./import-transactions.usecase"
+import { describe, expect, it, vi } from "vitest";
+import { createMockTransactionRepository } from "@/test/helpers/mock-repositories";
+import type { TransactionCreateInput } from "@/types/transaction";
+import { ImportTransactionsUsecase } from "./import-transactions.usecase";
 
 const mockTransactions: TransactionCreateInput[] = [
 	{
@@ -28,27 +28,27 @@ const mockTransactions: TransactionCreateInput[] = [
 		isIncome: false,
 		importHash: "def456",
 	},
-]
+];
 
 describe("ImportTransactionsUsecase", () => {
 	it("リポジトリの upsertMany にデータを渡して件数を返す", async () => {
-		const mockRepo = createMockTransactionRepository()
-		vi.mocked(mockRepo.upsertMany).mockResolvedValue(2)
+		const mockRepo = createMockTransactionRepository();
+		vi.mocked(mockRepo.upsertMany).mockResolvedValue(2);
 
-		const usecase = new ImportTransactionsUsecase(mockRepo)
-		const result = await usecase.execute(mockTransactions)
+		const usecase = new ImportTransactionsUsecase(mockRepo);
+		const result = await usecase.execute(mockTransactions);
 
-		expect(mockRepo.upsertMany).toHaveBeenCalledWith(mockTransactions)
-		expect(result).toBe(2)
-	})
+		expect(mockRepo.upsertMany).toHaveBeenCalledWith(mockTransactions);
+		expect(result).toBe(2);
+	});
 
 	it("空配列の場合は 0 を返す", async () => {
-		const mockRepo = createMockTransactionRepository()
-		vi.mocked(mockRepo.upsertMany).mockResolvedValue(0)
+		const mockRepo = createMockTransactionRepository();
+		vi.mocked(mockRepo.upsertMany).mockResolvedValue(0);
 
-		const usecase = new ImportTransactionsUsecase(mockRepo)
-		const result = await usecase.execute([])
+		const usecase = new ImportTransactionsUsecase(mockRepo);
+		const result = await usecase.execute([]);
 
-		expect(result).toBe(0)
-	})
-})
+		expect(result).toBe(0);
+	});
+});

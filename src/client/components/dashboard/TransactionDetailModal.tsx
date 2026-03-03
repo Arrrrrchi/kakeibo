@@ -1,23 +1,23 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts"
-import { Modal } from "@/client/components/ui/Modal"
-import { formatCurrency, formatMonth } from "@/client/lib/format"
-import { getTransactionsByCategory } from "@/server/actions/get-transactions-by-category"
-import type { Transaction } from "@/types/transaction"
+import { useEffect, useState } from "react";
+import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
+import { Modal } from "@/client/components/ui/Modal";
+import { formatCurrency, formatMonth } from "@/client/lib/format";
+import { getTransactionsByCategory } from "@/server/actions/get-transactions-by-category";
+import type { Transaction } from "@/types/transaction";
 
 type TransactionDetailModalProps = {
-	majorCategory: string
-	minorCategory: string
-	isOpen: boolean
-	onClose: () => void
-}
+	majorCategory: string;
+	minorCategory: string;
+	isOpen: boolean;
+	onClose: () => void;
+};
 
 type MonthlyTrendItem = {
-	month: string
-	total: number
-}
+	month: string;
+	total: number;
+};
 
 export function TransactionDetailModal({
 	majorCategory,
@@ -25,37 +25,37 @@ export function TransactionDetailModal({
 	isOpen,
 	onClose,
 }: TransactionDetailModalProps) {
-	const [transactions, setTransactions] = useState<Transaction[]>([])
-	const [monthlyTrend, setMonthlyTrend] = useState<MonthlyTrendItem[]>([])
-	const [loading, setLoading] = useState(false)
+	const [transactions, setTransactions] = useState<Transaction[]>([]);
+	const [monthlyTrend, setMonthlyTrend] = useState<MonthlyTrendItem[]>([]);
+	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (!isOpen) return
-		setLoading(true)
+		if (!isOpen) return;
+		setLoading(true);
 		getTransactionsByCategory(majorCategory, minorCategory)
 			.then((result) => {
 				if (result.success) {
-					setTransactions(result.data.transactions)
-					setMonthlyTrend(result.data.monthlyTrend)
+					setTransactions(result.data.transactions);
+					setMonthlyTrend(result.data.monthlyTrend);
 				}
 			})
-			.finally(() => setLoading(false))
-	}, [isOpen, majorCategory, minorCategory])
+			.finally(() => setLoading(false));
+	}, [isOpen, majorCategory, minorCategory]);
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
-	const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0)
-	const monthCount = monthlyTrend.length || 1
-	const monthlyAvg = Math.round(totalAmount / monthCount)
+	const totalAmount = transactions.reduce((sum, t) => sum + t.amount, 0);
+	const monthCount = monthlyTrend.length || 1;
+	const monthlyAvg = Math.round(totalAmount / monthCount);
 
 	const sortedTransactions = [...transactions].sort(
 		(a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-	)
+	);
 
 	const chartData = monthlyTrend.map((m) => ({
 		month: formatMonth(m.month),
 		total: m.total,
-	}))
+	}));
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} title={`${majorCategory} / ${minorCategory}`}>
@@ -128,5 +128,5 @@ export function TransactionDetailModal({
 				</div>
 			)}
 		</Modal>
-	)
+	);
 }

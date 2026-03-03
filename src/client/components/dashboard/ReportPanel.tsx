@@ -1,20 +1,20 @@
-import { Fragment } from "react"
-import { formatCurrency, formatMonth } from "@/client/lib/format"
-import type { CycleType } from "@/generated/prisma/enums"
-import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard"
+import { Fragment } from "react";
+import { formatCurrency, formatMonth } from "@/client/lib/format";
+import type { CycleType } from "@/generated/prisma/enums";
+import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard";
 
 type ReportPanelProps = {
-	budgetReport: BudgetReportRow[]
-	months: string[]
-	investmentRow: InvestmentRow
-}
+	budgetReport: BudgetReportRow[];
+	months: string[];
+	investmentRow: InvestmentRow;
+};
 
 const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 	{ key: "monthly_fixed", label: "毎月・固定" },
 	{ key: "monthly_variable", label: "毎月・変動" },
 	{ key: "irregular_fixed", label: "不定期・固定" },
 	{ key: "irregular_variable", label: "不定期・変動" },
-]
+];
 
 export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanelProps) {
 	if (budgetReport.length === 0) {
@@ -22,18 +22,18 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 			<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
 				データがありません
 			</div>
-		)
+		);
 	}
 
-	const totalBudget = budgetReport.reduce((sum, row) => sum + row.totalBudget, 0)
-	const totalActual = budgetReport.reduce((sum, row) => sum + row.totalActual, 0)
-	const totalDifference = totalBudget - totalActual
-	const overBudgetCount = budgetReport.filter((row) => row.difference < 0).length
+	const totalBudget = budgetReport.reduce((sum, row) => sum + row.totalBudget, 0);
+	const totalActual = budgetReport.reduce((sum, row) => sum + row.totalActual, 0);
+	const totalDifference = totalBudget - totalActual;
+	const overBudgetCount = budgetReport.filter((row) => row.difference < 0).length;
 
 	const groupedRows = CYCLE_TYPE_ORDER.map((cycle) => ({
 		...cycle,
 		rows: budgetReport.filter((row) => row.budgetItem.cycleType === cycle.key),
-	})).filter((group) => group.rows.length > 0)
+	})).filter((group) => group.rows.length > 0);
 
 	return (
 		<div className="space-y-4">
@@ -140,12 +140,12 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 								const monthTotal = budgetReport.reduce(
 									(sum, row) => sum + (row.monthlyActuals[m] ?? 0),
 									0,
-								)
+								);
 								return (
 									<td key={m} className="px-4 py-3 text-right whitespace-nowrap">
 										{formatCurrency(monthTotal)}
 									</td>
-								)
+								);
 							})}
 							<td className="px-4 py-3 text-right whitespace-nowrap">
 								{formatCurrency(totalActual)}
@@ -184,5 +184,5 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 				</table>
 			</div>
 		</div>
-	)
+	);
 }

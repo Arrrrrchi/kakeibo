@@ -5,7 +5,7 @@ function KpiSkeleton() {
 			<div className="h-8 w-28 bg-gray-200 rounded animate-pulse" />
 			<div className="h-3 w-20 bg-gray-200 rounded animate-pulse" />
 		</div>
-	)
+	);
 }
 
 function ChartSkeleton() {
@@ -14,7 +14,7 @@ function ChartSkeleton() {
 			<div className="h-5 w-32 bg-gray-200 rounded animate-pulse mb-4" />
 			<div className="h-[300px] bg-gray-100 rounded animate-pulse" />
 		</div>
-	)
+	);
 }
 
 export default function DashboardLoading() {
@@ -41,5 +41,5 @@ export default function DashboardLoading() {
 				<ChartSkeleton />
 			</div>
 		</div>
-	)
+	);
 }

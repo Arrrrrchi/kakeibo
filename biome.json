@@ -22,7 +22,7 @@
 	},
 	"javascript": {
 		"formatter": {
-			"semicolons": "asNeeded"
+			"semicolons": "always"
 		}
 	},
 	"css": {

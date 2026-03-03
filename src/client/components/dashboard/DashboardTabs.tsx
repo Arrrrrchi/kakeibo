@@ -1,30 +1,30 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { DashboardData } from "@/types/dashboard"
-import { MappingPanel } from "./MappingPanel"
-import { ReportPanel } from "./ReportPanel"
-import { SummaryPanel } from "./SummaryPanel"
+import { useState } from "react";
+import type { DashboardData } from "@/types/dashboard";
+import { MappingPanel } from "./MappingPanel";
+import { ReportPanel } from "./ReportPanel";
+import { SummaryPanel } from "./SummaryPanel";
 
-type Tab = "summary" | "mapping" | "report"
+type Tab = "summary" | "mapping" | "report";
 
 type TabConfig = {
-	key: Tab
-	label: string
-}
+	key: Tab;
+	label: string;
+};
 
 const tabs: TabConfig[] = [
 	{ key: "summary", label: "サマリー" },
 	{ key: "mapping", label: "予算マッピング" },
 	{ key: "report", label: "予算対比レポート" },
-]
+];
 
 type DashboardTabsProps = {
-	dashboardData: DashboardData
-}
+	dashboardData: DashboardData;
+};
 
 export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
-	const [activeTab, setActiveTab] = useState<Tab>("summary")
+	const [activeTab, setActiveTab] = useState<Tab>("summary");
 
 	return (
 		<div>
@@ -65,5 +65,5 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 				)}
 			</div>
 		</div>
-	)
+	);
 }

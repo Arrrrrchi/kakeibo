@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts"
-import { formatCurrency, formatPercent } from "@/client/lib/format"
-import type { CategoryBreakdown } from "@/types/transaction"
+import { Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import { formatCurrency, formatPercent } from "@/client/lib/format";
+import type { CategoryBreakdown } from "@/types/transaction";
 
 const COLORS = [
 	"#3b82f6",
@@ -15,30 +15,30 @@ const COLORS = [
 	"#f97316",
 	"#6366f1",
 	"#14b8a6",
-]
+];
 
 type CategoryPieChartProps = {
-	data: CategoryBreakdown[]
-}
+	data: CategoryBreakdown[];
+};
 
 function groupByMajorCategory(data: CategoryBreakdown[]): { name: string; value: number }[] {
-	const grouped = new Map<string, number>()
+	const grouped = new Map<string, number>();
 	for (const item of data) {
-		const current = grouped.get(item.majorCategory) ?? 0
-		grouped.set(item.majorCategory, current + item.total)
+		const current = grouped.get(item.majorCategory) ?? 0;
+		grouped.set(item.majorCategory, current + item.total);
 	}
 	return Array.from(grouped.entries())
 		.map(([name, value]) => ({ name, value }))
-		.sort((a, b) => b.value - a.value)
+		.sort((a, b) => b.value - a.value);
 }
 
 export function CategoryPieChart({ data }: CategoryPieChartProps) {
 	if (data.length === 0) {
-		return <p className="text-sm text-gray-400 text-center py-8">データがありません</p>
+		return <p className="text-sm text-gray-400 text-center py-8">データがありません</p>;
 	}
 
-	const grouped = groupByMajorCategory(data)
-	const total = grouped.reduce((sum, item) => sum + item.value, 0)
+	const grouped = groupByMajorCategory(data);
+	const total = grouped.reduce((sum, item) => sum + item.value, 0);
 
 	return (
 		<div aria-label="カテゴリ別支出チャート" role="img">
@@ -62,5 +62,5 @@ export function CategoryPieChart({ data }: CategoryPieChartProps) {
 				</PieChart>
 			</ResponsiveContainer>
 		</div>
-	)
+	);
 }

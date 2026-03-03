@@ -1,10 +1,10 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
 type CardProps = {
-	title?: string
-	children: ReactNode
-	className?: string
-}
+	title?: string;
+	children: ReactNode;
+	className?: string;
+};
 
 export function Card({ title, children, className = "" }: CardProps) {
 	return (
@@ -12,5 +12,5 @@ export function Card({ title, children, className = "" }: CardProps) {
 			{title && <h2 className="text-lg font-semibold mb-3">{title}</h2>}
 			{children}
 		</div>
-	)
+	);
 }

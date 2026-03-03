@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { CategoryPieChart } from "@/client/components/charts/CategoryPieChart"
-import { MonthlyTrendChart } from "@/client/components/charts/MonthlyTrendChart"
-import { StackedBarChart } from "@/client/components/charts/StackedBarChart"
-import { Card } from "@/client/components/ui/Card"
-import { KpiCard } from "@/client/components/ui/KpiCard"
-import { formatCurrency } from "@/client/lib/format"
-import type { DashboardData } from "@/types/dashboard"
+import { CategoryPieChart } from "@/client/components/charts/CategoryPieChart";
+import { MonthlyTrendChart } from "@/client/components/charts/MonthlyTrendChart";
+import { StackedBarChart } from "@/client/components/charts/StackedBarChart";
+import { Card } from "@/client/components/ui/Card";
+import { KpiCard } from "@/client/components/ui/KpiCard";
+import { formatCurrency } from "@/client/lib/format";
+import type { DashboardData } from "@/types/dashboard";
 
 type SummaryPanelProps = {
-	data: DashboardData
-}
+	data: DashboardData;
+};
 
 export function SummaryPanel({ data }: SummaryPanelProps) {
-	const { kpiSummary, monthlyTrend, categoryBreakdown } = data
+	const { kpiSummary, monthlyTrend, categoryBreakdown } = data;
 
 	return (
 		<div className="space-y-6">
@@ -46,5 +46,5 @@ export function SummaryPanel({ data }: SummaryPanelProps) {
 				<StackedBarChart data={monthlyTrend} categoryData={categoryBreakdown} />
 			</Card>
 		</div>
-	)
+	);
 }

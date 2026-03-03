@@ -1,28 +1,28 @@
-import "server-only"
+import "server-only";
 
-import { prisma } from "@/server/lib/prisma"
-import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface"
-import type { BudgetFormData, BudgetItem, BudgetItemWithMappings } from "@/types/budget"
+import { prisma } from "@/server/lib/prisma";
+import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface";
+import type { BudgetFormData, BudgetItem, BudgetItemWithMappings } from "@/types/budget";
 
 export class PrismaBudgetRepository implements IBudgetRepository {
 	async findAll(): Promise<BudgetItem[]> {
 		return prisma.budgetItem.findMany({
 			orderBy: { sortOrder: "asc" },
-		})
+		});
 	}
 
 	async findAllWithMappings(): Promise<BudgetItemWithMappings[]> {
 		return prisma.budgetItem.findMany({
 			include: { mappings: true },
 			orderBy: { sortOrder: "asc" },
-		})
+		});
 	}
 
 	async findById(id: string): Promise<BudgetItemWithMappings | null> {
 		return prisma.budgetItem.findUnique({
 			where: { id },
 			include: { mappings: true },
-		})
+		});
 	}
 
 	async create(data: BudgetFormData): Promise<BudgetItem> {
@@ -32,7 +32,7 @@ export class PrismaBudgetRepository implements IBudgetRepository {
 				monthlyAmount: data.monthlyAmount,
 				cycleType: data.cycleType,
 			},
-		})
+		});
 	}
 
 	async update(id: string, data: BudgetFormData): Promise<BudgetItem> {
@@ -43,11 +43,11 @@ export class PrismaBudgetRepository implements IBudgetRepository {
 				monthlyAmount: data.monthlyAmount,
 				cycleType: data.cycleType,
 			},
-		})
+		});
 	}
 
 	async delete(id: string): Promise<void> {
-		await prisma.budgetItem.delete({ where: { id } })
+		await prisma.budgetItem.delete({ where: { id } });
 	}
 
 	async updateSortOrder(items: { id: string; sortOrder: number }[]): Promise<void> {
@@ -58,6 +58,6 @@ export class PrismaBudgetRepository implements IBudgetRepository {
 					data: { sortOrder: item.sortOrder },
 				}),
 			),
-		)
+		);
 	}
 }

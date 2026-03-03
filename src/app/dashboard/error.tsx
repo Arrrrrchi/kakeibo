@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { Button } from "@/client/components/ui/Button"
+import { Button } from "@/client/components/ui/Button";
 
 export default function DashboardError({
 	error,
 	reset,
 }: {
-	error: Error & { digest?: string }
-	reset: () => void
+	error: Error & { digest?: string };
+	reset: () => void;
 }) {
-	const isDatabaseError = error.message.includes("connect")
+	const isDatabaseError = error.message.includes("connect");
 	const message = isDatabaseError
 		? "データベースに接続できません。環境変数を確認してください。"
-		: "ダッシュボードの読み込みに失敗しました。"
+		: "ダッシュボードの読み込みに失敗しました。";
 
 	return (
 		<div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 p-6">
@@ -25,5 +25,5 @@ export default function DashboardError({
 			)}
 			<Button onClick={reset}>再試行</Button>
 		</div>
-	)
+	);
 }
