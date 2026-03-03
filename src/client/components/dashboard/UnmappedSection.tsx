@@ -1,18 +1,18 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import type { CategoryBreakdown } from "@/types/transaction"
-import { CategoryChip } from "./CategoryChip"
+import { useState } from "react";
+import type { CategoryBreakdown } from "@/types/transaction";
+import { CategoryChip } from "./CategoryChip";
 
 type UnmappedSectionProps = {
-	unmappedCategories: CategoryBreakdown[]
-	onCategoryClick: (majorCategory: string, minorCategory: string) => void
-}
+	unmappedCategories: CategoryBreakdown[];
+	onCategoryClick: (majorCategory: string, minorCategory: string) => void;
+};
 
 export function UnmappedSection({ unmappedCategories, onCategoryClick }: UnmappedSectionProps) {
-	const [expanded, setExpanded] = useState(true)
+	const [expanded, setExpanded] = useState(true);
 
-	if (unmappedCategories.length === 0) return null
+	if (unmappedCategories.length === 0) return null;
 
 	return (
 		<div className="sm:sticky sm:top-0 z-10 bg-amber-50 border border-amber-300 rounded-lg p-4 mb-4">
@@ -46,5 +46,5 @@ export function UnmappedSection({ unmappedCategories, onCategoryClick }: Unmappe
 				</>
 			)}
 		</div>
-	)
+	);
 }

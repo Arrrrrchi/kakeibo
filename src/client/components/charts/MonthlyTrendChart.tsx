@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
 	Bar,
@@ -9,24 +9,24 @@ import {
 	Tooltip,
 	XAxis,
 	YAxis,
-} from "recharts"
-import { formatCompactCurrency, formatCurrency, formatMonth } from "@/client/lib/format"
-import type { MonthlyAggregation } from "@/types/transaction"
+} from "recharts";
+import { formatCompactCurrency, formatCurrency, formatMonth } from "@/client/lib/format";
+import type { MonthlyAggregation } from "@/types/transaction";
 
 type MonthlyTrendChartProps = {
-	data: MonthlyAggregation[]
-}
+	data: MonthlyAggregation[];
+};
 
 export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
 	if (data.length === 0) {
-		return <p className="text-sm text-gray-400 text-center py-8">データがありません</p>
+		return <p className="text-sm text-gray-400 text-center py-8">データがありません</p>;
 	}
 
 	const chartData = data.map((d) => ({
 		month: formatMonth(d.month),
 		収入: d.totalIncome,
 		支出: d.totalExpense,
-	}))
+	}));
 
 	return (
 		<div aria-label="月次収支トレンドチャート" role="img">
@@ -42,5 +42,5 @@ export function MonthlyTrendChart({ data }: MonthlyTrendChartProps) {
 				</BarChart>
 			</ResponsiveContainer>
 		</div>
-	)
+	);
 }

@@ -1,13 +1,13 @@
-"use client"
+"use client";
 
-import { Button } from "@/client/components/ui/Button"
+import { Button } from "@/client/components/ui/Button";
 
 export default function GlobalError({
 	error,
 	reset,
 }: {
-	error: Error & { digest?: string }
-	reset: () => void
+	error: Error & { digest?: string };
+	reset: () => void;
 }) {
 	return (
 		<div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
@@ -22,5 +22,5 @@ export default function GlobalError({
 			)}
 			<Button onClick={reset}>再試行</Button>
 		</div>
-	)
+	);
 }

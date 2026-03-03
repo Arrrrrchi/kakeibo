@@ -1,7 +1,7 @@
-import { vi } from "vitest"
-import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface"
-import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface"
-import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface"
+import { vi } from "vitest";
+import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface";
+import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface";
+import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface";
 
 export function createMockTransactionRepository(): ITransactionRepository {
 	return {
@@ -12,7 +12,7 @@ export function createMockTransactionRepository(): ITransactionRepository {
 		getDistinctCategories: vi.fn().mockResolvedValue([]),
 		getMonthlyTrendByCategory: vi.fn().mockResolvedValue([]),
 		getMonthlyInvestmentTransferTrend: vi.fn().mockResolvedValue([]),
-	}
+	};
 }
 
 export function createMockBudgetRepository(): IBudgetRepository {
@@ -24,7 +24,7 @@ export function createMockBudgetRepository(): IBudgetRepository {
 		update: vi.fn(),
 		delete: vi.fn(),
 		updateSortOrder: vi.fn(),
-	}
+	};
 }
 
 export function createMockMappingRepository(): IMappingRepository {
@@ -32,5 +32,5 @@ export function createMockMappingRepository(): IMappingRepository {
 		findByBudgetItemId: vi.fn().mockResolvedValue([]),
 		replaceAll: vi.fn(),
 		findUnmappedCategories: vi.fn().mockResolvedValue([]),
-	}
+	};
 }

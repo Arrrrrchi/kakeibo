@@ -1,19 +1,19 @@
-"use client"
+"use client";
 
-import { useTransition } from "react"
-import { useToast } from "@/client/components/ui/Toast"
-import { formatCurrency } from "@/client/lib/format"
-import { updateMappings } from "@/server/actions/update-mappings"
-import type { BudgetItemWithMappings } from "@/types/budget"
-import type { CategoryBreakdown } from "@/types/transaction"
-import { CategoryChip } from "./CategoryChip"
+import { useTransition } from "react";
+import { useToast } from "@/client/components/ui/Toast";
+import { formatCurrency } from "@/client/lib/format";
+import { updateMappings } from "@/server/actions/update-mappings";
+import type { BudgetItemWithMappings } from "@/types/budget";
+import type { CategoryBreakdown } from "@/types/transaction";
+import { CategoryChip } from "./CategoryChip";
 
 type BudgetItemCardProps = {
-	budgetItem: BudgetItemWithMappings
-	allCategories: CategoryBreakdown[]
-	onEdit: (item: BudgetItemWithMappings) => void
-	onCategoryDetail?: (majorCategory: string, minorCategory: string) => void
-}
+	budgetItem: BudgetItemWithMappings;
+	allCategories: CategoryBreakdown[];
+	onEdit: (item: BudgetItemWithMappings) => void;
+	onCategoryDetail?: (majorCategory: string, minorCategory: string) => void;
+};
 
 export function BudgetItemCard({
 	budgetItem,
@@ -21,22 +21,22 @@ export function BudgetItemCard({
 	onEdit,
 	onCategoryDetail,
 }: BudgetItemCardProps) {
-	const [isPending, startTransition] = useTransition()
-	const { showToast } = useToast()
+	const [isPending, startTransition] = useTransition();
+	const { showToast } = useToast();
 
 	const isMapped = (majorCategory: string, minorCategory: string): boolean =>
 		budgetItem.mappings.some(
 			(m) => m.majorCategory === majorCategory && m.minorCategory === minorCategory,
-		)
+		);
 
 	const handleChipClick = (majorCategory: string, minorCategory: string) => {
-		const currentlyMapped = isMapped(majorCategory, minorCategory)
-		let newCategories: { majorCategory: string; minorCategory: string }[]
+		const currentlyMapped = isMapped(majorCategory, minorCategory);
+		let newCategories: { majorCategory: string; minorCategory: string }[];
 
 		if (currentlyMapped) {
 			newCategories = budgetItem.mappings
 				.filter((m) => !(m.majorCategory === majorCategory && m.minorCategory === minorCategory))
-				.map((m) => ({ majorCategory: m.majorCategory, minorCategory: m.minorCategory }))
+				.map((m) => ({ majorCategory: m.majorCategory, minorCategory: m.minorCategory }));
 		} else {
 			newCategories = [
 				...budgetItem.mappings.map((m) => ({
@@ -44,16 +44,16 @@ export function BudgetItemCard({
 					minorCategory: m.minorCategory,
 				})),
 				{ majorCategory, minorCategory },
-			]
+			];
 		}
 
 		startTransition(async () => {
-			const result = await updateMappings(budgetItem.id, newCategories)
+			const result = await updateMappings(budgetItem.id, newCategories);
 			if (!result.success) {
-				showToast(result.error, "error")
+				showToast(result.error, "error");
 			}
-		})
-	}
+		});
+	};
 
 	return (
 		<div className={`bg-white border rounded-lg p-4 ${isPending ? "opacity-60" : ""}`}>
@@ -88,5 +88,5 @@ export function BudgetItemCard({
 				))}
 			</div>
 		</div>
-	)
+	);
 }

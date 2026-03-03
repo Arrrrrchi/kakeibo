@@ -1,25 +1,25 @@
-import { describe, expect, it, vi } from "vitest"
-import { loadDashboardData } from "@/server/loaders/load-dashboard-data"
+import { describe, expect, it, vi } from "vitest";
+import { loadDashboardData } from "@/server/loaders/load-dashboard-data";
 
-const mockExecute = vi.fn()
+const mockExecute = vi.fn();
 
 vi.mock("@/server/repositories/prisma-transaction.repository", () => ({
 	PrismaTransactionRepository: class {},
-}))
+}));
 
 vi.mock("@/server/repositories/prisma-budget.repository", () => ({
 	PrismaBudgetRepository: class {},
-}))
+}));
 
 vi.mock("@/server/repositories/prisma-mapping.repository", () => ({
 	PrismaMappingRepository: class {},
-}))
+}));
 
 vi.mock("@/server/usecases/get-dashboard-summary.usecase", () => ({
 	GetDashboardSummaryUsecase: class {
-		execute = mockExecute
+		execute = mockExecute;
 	},
-}))
+}));
 
 describe("loadDashboardData", () => {
 	it("ユースケースの execute を呼び出してデータを返す", async () => {
@@ -36,12 +36,12 @@ describe("loadDashboardData", () => {
 			budgetItems: [],
 			unmappedCategories: [],
 			budgetReport: [],
-		}
-		mockExecute.mockResolvedValue(mockData)
+		};
+		mockExecute.mockResolvedValue(mockData);
 
-		const result = await loadDashboardData()
+		const result = await loadDashboardData();
 
-		expect(mockExecute).toHaveBeenCalled()
-		expect(result).toEqual(mockData)
-	})
-})
+		expect(mockExecute).toHaveBeenCalled();
+		expect(result).toEqual(mockData);
+	});
+});

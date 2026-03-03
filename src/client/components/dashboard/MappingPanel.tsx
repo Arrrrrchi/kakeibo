@@ -1,25 +1,25 @@
-"use client"
+"use client";
 
-import { useMemo, useState } from "react"
-import { Button } from "@/client/components/ui/Button"
-import type { CycleType } from "@/generated/prisma/enums"
-import type { BudgetItemWithMappings } from "@/types/budget"
-import type { CategoryBreakdown } from "@/types/transaction"
-import { BudgetFormModal } from "./BudgetFormModal"
-import { BudgetItemCard } from "./BudgetItemCard"
-import { TransactionDetailModal } from "./TransactionDetailModal"
-import { UnmappedSection } from "./UnmappedSection"
+import { useMemo, useState } from "react";
+import { Button } from "@/client/components/ui/Button";
+import type { CycleType } from "@/generated/prisma/enums";
+import type { BudgetItemWithMappings } from "@/types/budget";
+import type { CategoryBreakdown } from "@/types/transaction";
+import { BudgetFormModal } from "./BudgetFormModal";
+import { BudgetItemCard } from "./BudgetItemCard";
+import { TransactionDetailModal } from "./TransactionDetailModal";
+import { UnmappedSection } from "./UnmappedSection";
 
 type MappingPanelProps = {
-	budgetItems: BudgetItemWithMappings[]
-	allCategories: CategoryBreakdown[]
-	unmappedCategories: CategoryBreakdown[]
-}
+	budgetItems: BudgetItemWithMappings[];
+	allCategories: CategoryBreakdown[];
+	unmappedCategories: CategoryBreakdown[];
+};
 
 function sortByCategory(a: CategoryBreakdown, b: CategoryBreakdown): number {
-	const majorCmp = a.majorCategory.localeCompare(b.majorCategory, "ja")
-	if (majorCmp !== 0) return majorCmp
-	return a.minorCategory.localeCompare(b.minorCategory, "ja")
+	const majorCmp = a.majorCategory.localeCompare(b.majorCategory, "ja");
+	if (majorCmp !== 0) return majorCmp;
+	return a.minorCategory.localeCompare(b.minorCategory, "ja");
 }
 
 const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
@@ -27,7 +27,7 @@ const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 	{ key: "monthly_variable", label: "毎月・変動" },
 	{ key: "irregular_fixed", label: "不定期・固定" },
 	{ key: "irregular_variable", label: "不定期・変動" },
-]
+];
 
 export function MappingPanel({
 	budgetItems,
@@ -37,41 +37,41 @@ export function MappingPanel({
 	const sortedAllCategories = useMemo(
 		() => [...allCategories].sort(sortByCategory),
 		[allCategories],
-	)
+	);
 	const sortedUnmappedCategories = useMemo(
 		() => [...unmappedCategories].sort(sortByCategory),
 		[unmappedCategories],
-	)
-	const [editingItem, setEditingItem] = useState<BudgetItemWithMappings | undefined>(undefined)
-	const [showFormModal, setShowFormModal] = useState(false)
+	);
+	const [editingItem, setEditingItem] = useState<BudgetItemWithMappings | undefined>(undefined);
+	const [showFormModal, setShowFormModal] = useState(false);
 	const [detailCategory, setDetailCategory] = useState<{
-		major: string
-		minor: string
-	} | null>(null)
+		major: string;
+		minor: string;
+	} | null>(null);
 
 	const groupedItems = CYCLE_TYPE_ORDER.map((cycle) => ({
 		...cycle,
 		items: budgetItems.filter((item) => item.cycleType === cycle.key),
-	})).filter((group) => group.items.length > 0)
+	})).filter((group) => group.items.length > 0);
 
 	const handleEdit = (item: BudgetItemWithMappings) => {
-		setEditingItem(item)
-		setShowFormModal(true)
-	}
+		setEditingItem(item);
+		setShowFormModal(true);
+	};
 
 	const handleAdd = () => {
-		setEditingItem(undefined)
-		setShowFormModal(true)
-	}
+		setEditingItem(undefined);
+		setShowFormModal(true);
+	};
 
 	const handleCloseFormModal = () => {
-		setShowFormModal(false)
-		setEditingItem(undefined)
-	}
+		setShowFormModal(false);
+		setEditingItem(undefined);
+	};
 
 	const handleCategoryDetail = (majorCategory: string, minorCategory: string) => {
-		setDetailCategory({ major: majorCategory, minor: minorCategory })
-	}
+		setDetailCategory({ major: majorCategory, minor: minorCategory });
+	};
 
 	return (
 		<div>
@@ -120,5 +120,5 @@ export function MappingPanel({
 				/>
 			)}
 		</div>
-	)
+	);
 }

@@ -1,28 +1,28 @@
-import "server-only"
+import "server-only";
 
-import { createHash } from "node:crypto"
-import type { TransactionCreateInput } from "@/types/transaction"
+import { createHash } from "node:crypto";
+import type { TransactionCreateInput } from "@/types/transaction";
 
 export async function parseMoneyforwardCsv(buffer: Buffer): Promise<TransactionCreateInput[]> {
-	const text = decodeBuffer(buffer)
-	const lines = text.split(/\r?\n/)
+	const text = decodeBuffer(buffer);
+	const lines = text.split(/\r?\n/);
 
 	if (lines.length <= 1) {
-		return []
+		return [];
 	}
 
-	const headers = parseHeaderLine(lines[0])
-	const transactions: TransactionCreateInput[] = []
+	const headers = parseHeaderLine(lines[0]);
+	const transactions: TransactionCreateInput[] = [];
 
 	for (let i = 1; i < lines.length; i++) {
-		const line = lines[i].trim()
-		if (!line) continue
+		const line = lines[i].trim();
+		if (!line) continue;
 
-		const row = parseLine(line, headers)
-		if (!row) continue
-		if (!row.isCalculationTarget && !row.isTransfer) continue
+		const row = parseLine(line, headers);
+		if (!row) continue;
+		if (!row.isCalculationTarget && !row.isTransfer) continue;
 
-		const isIncome = row.amount > 0
+		const isIncome = row.amount > 0;
 
 		transactions.push({
 			date: new Date(row.date),
@@ -36,36 +36,36 @@ export async function parseMoneyforwardCsv(buffer: Buffer): Promise<TransactionC
 			isIncome,
 			isTransfer: row.isTransfer,
 			importHash: generateHash(row),
-		})
+		});
 	}
 
-	return transactions
+	return transactions;
 }
 
 function decodeBuffer(buffer: Buffer): string {
-	const bytes = new Uint8Array(buffer)
+	const bytes = new Uint8Array(buffer);
 
 	try {
-		const utf8Text = new TextDecoder("utf-8", { fatal: true }).decode(bytes)
-		return utf8Text
+		const utf8Text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+		return utf8Text;
 	} catch {
-		const decoder = new TextDecoder("shift-jis")
-		return decoder.decode(bytes)
+		const decoder = new TextDecoder("shift-jis");
+		return decoder.decode(bytes);
 	}
 }
 
 type ColumnIndices = {
-	calc: number
-	date: number
-	description: number
-	amount: number
-	institution: number
-	major: number
-	minor: number
-	memo: number
-	transfer: number
-	id: number
-}
+	calc: number;
+	date: number;
+	description: number;
+	amount: number;
+	institution: number;
+	major: number;
+	minor: number;
+	memo: number;
+	transfer: number;
+	id: number;
+};
 
 const COLUMN_MAP: Record<string, keyof ColumnIndices> = {
 	計算対象: "calc",
@@ -78,39 +78,39 @@ const COLUMN_MAP: Record<string, keyof ColumnIndices> = {
 	メモ: "memo",
 	振替: "transfer",
 	ID: "id",
-}
+};
 
 function parseHeaderLine(headerLine: string): ColumnIndices {
-	const columns = splitCsvLine(headerLine)
-	const indices = {} as ColumnIndices
+	const columns = splitCsvLine(headerLine);
+	const indices = {} as ColumnIndices;
 
 	for (let i = 0; i < columns.length; i++) {
-		const col = columns[i].trim()
-		const key = COLUMN_MAP[col]
+		const col = columns[i].trim();
+		const key = COLUMN_MAP[col];
 		if (key) {
-			indices[key] = i
+			indices[key] = i;
 		}
 	}
 
-	return indices
+	return indices;
 }
 
 type ParsedRow = {
-	isCalculationTarget: boolean
-	date: string
-	description: string
-	amount: number
-	institution: string
-	majorCategory: string
-	minorCategory: string
-	memo: string
-	isTransfer: boolean
-	moneyforwardId: string
-}
+	isCalculationTarget: boolean;
+	date: string;
+	description: string;
+	amount: number;
+	institution: string;
+	majorCategory: string;
+	minorCategory: string;
+	memo: string;
+	isTransfer: boolean;
+	moneyforwardId: string;
+};
 
 function parseLine(line: string, headers: ColumnIndices): ParsedRow | null {
-	const fields = splitCsvLine(line)
-	if (fields.length <= 1) return null
+	const fields = splitCsvLine(line);
+	if (fields.length <= 1) return null;
 
 	return {
 		isCalculationTarget: fields[headers.calc] === "1",
@@ -123,30 +123,30 @@ function parseLine(line: string, headers: ColumnIndices): ParsedRow | null {
 		memo: fields[headers.memo] ?? "",
 		isTransfer: fields[headers.transfer] === "1",
 		moneyforwardId: fields[headers.id] ?? "",
-	}
+	};
 }
 
 function splitCsvLine(line: string): string[] {
-	const fields: string[] = []
-	let current = ""
-	let inQuotes = false
+	const fields: string[] = [];
+	let current = "";
+	let inQuotes = false;
 
 	for (const char of line) {
 		if (char === '"') {
-			inQuotes = !inQuotes
+			inQuotes = !inQuotes;
 		} else if (char === "," && !inQuotes) {
-			fields.push(current)
-			current = ""
+			fields.push(current);
+			current = "";
 		} else {
-			current += char
+			current += char;
 		}
 	}
-	fields.push(current)
+	fields.push(current);
 
-	return fields
+	return fields;
 }
 
 function generateHash(row: ParsedRow): string {
-	const input = `${row.date}|${row.description}|${row.amount}|${row.institution}|${row.moneyforwardId}`
-	return createHash("sha256").update(input).digest("hex")
+	const input = `${row.date}|${row.description}|${row.amount}|${row.institution}|${row.moneyforwardId}`;
+	return createHash("sha256").update(input).digest("hex");
 }

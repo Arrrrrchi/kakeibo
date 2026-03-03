@@ -1,12 +1,12 @@
-"use client"
+"use client";
 
 type CategoryChipProps = {
-	majorCategory: string
-	minorCategory: string
-	selected: boolean
-	onClick: () => void
-	onDetailClick?: () => void
-}
+	majorCategory: string;
+	minorCategory: string;
+	selected: boolean;
+	onClick: () => void;
+	onDetailClick?: () => void;
+};
 
 export function CategoryChip({
 	majorCategory,
@@ -33,14 +33,14 @@ export function CategoryChip({
 					tabIndex={0}
 					aria-label="詳細"
 					onClick={(e) => {
-						e.stopPropagation()
-						onDetailClick()
+						e.stopPropagation();
+						onDetailClick();
 					}}
 					onKeyDown={(e) => {
 						if (e.key === "Enter" || e.key === " ") {
-							e.preventDefault()
-							e.stopPropagation()
-							onDetailClick()
+							e.preventDefault();
+							e.stopPropagation();
+							onDetailClick();
 						}
 					}}
 					className="ml-1 rounded-full w-4 h-4 flex items-center justify-center text-[10px] leading-none hover:bg-black/10"
@@ -49,5 +49,5 @@ export function CategoryChip({
 				</span>
 			)}
 		</button>
-	)
+	);
 }

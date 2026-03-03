@@ -1,4 +1,4 @@
-import "@testing-library/jest-dom/vitest"
+import "@testing-library/jest-dom/vitest";
 
 // Recharts の ResponsiveContainer が使う ResizeObserver のモック
 if (typeof globalThis.ResizeObserver === "undefined") {
@@ -6,5 +6,5 @@ if (typeof globalThis.ResizeObserver === "undefined") {
 		observe() {}
 		unobserve() {}
 		disconnect() {}
-	}
+	};
 }

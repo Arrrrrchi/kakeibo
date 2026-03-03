@@ -1,9 +1,9 @@
-import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface"
-import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface"
-import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface"
-import type { BudgetItemWithMappings } from "@/types/budget"
-import type { BudgetReportRow, DashboardData, InvestmentRow, KpiSummary } from "@/types/dashboard"
-import type { CategoryBreakdown, MonthlyAggregation } from "@/types/transaction"
+import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface";
+import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface";
+import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface";
+import type { BudgetItemWithMappings } from "@/types/budget";
+import type { BudgetReportRow, DashboardData, InvestmentRow, KpiSummary } from "@/types/dashboard";
+import type { CategoryBreakdown, MonthlyAggregation } from "@/types/transaction";
 
 export class GetDashboardSummaryUsecase {
 	constructor(
@@ -17,14 +17,14 @@ export class GetDashboardSummaryUsecase {
 			this.transactionRepository.getMonthlyAggregation(),
 			this.transactionRepository.getCategoryBreakdown(),
 			this.budgetRepository.findAllWithMappings(),
-		])
+		]);
 
-		const kpiSummary = this.calculateKpi(monthlyTrend)
-		const unmappedCategories = this.findUnmappedCategories(categoryBreakdown, budgetItems)
+		const kpiSummary = this.calculateKpi(monthlyTrend);
+		const unmappedCategories = this.findUnmappedCategories(categoryBreakdown, budgetItems);
 		const [budgetReport, investmentRow] = await Promise.all([
 			this.buildBudgetReport(budgetItems, monthlyTrend),
 			this.buildInvestmentRow(),
-		])
+		]);
 
 		return {
 			kpiSummary,
@@ -34,13 +34,13 @@ export class GetDashboardSummaryUsecase {
 			unmappedCategories,
 			budgetReport,
 			investmentRow,
-		}
+		};
 	}
 
 	private calculateKpi(monthlyTrend: MonthlyAggregation[]): KpiSummary {
-		const monthCount = monthlyTrend.length
-		const totalIncome = monthlyTrend.reduce((sum, m) => sum + m.totalIncome, 0)
-		const totalExpense = monthlyTrend.reduce((sum, m) => sum + m.totalExpense, 0)
+		const monthCount = monthlyTrend.length;
+		const totalIncome = monthlyTrend.reduce((sum, m) => sum + m.totalIncome, 0);
+		const totalExpense = monthlyTrend.reduce((sum, m) => sum + m.totalExpense, 0);
 
 		return {
 			totalIncome,
@@ -48,60 +48,60 @@ export class GetDashboardSummaryUsecase {
 			balance: totalIncome - totalExpense,
 			monthlyAvgExpense: monthCount > 0 ? Math.round(totalExpense / monthCount) : 0,
 			monthCount,
-		}
+		};
 	}
 
 	private findUnmappedCategories(
 		categoryBreakdown: CategoryBreakdown[],
 		budgetItems: BudgetItemWithMappings[],
 	): CategoryBreakdown[] {
-		const mappedSet = new Set<string>()
+		const mappedSet = new Set<string>();
 		for (const item of budgetItems) {
 			for (const mapping of item.mappings) {
-				mappedSet.add(`${mapping.majorCategory}|${mapping.minorCategory}`)
+				mappedSet.add(`${mapping.majorCategory}|${mapping.minorCategory}`);
 			}
 		}
 
-		return categoryBreakdown.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`))
+		return categoryBreakdown.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`));
 	}
 
 	private async buildInvestmentRow(): Promise<InvestmentRow> {
-		const trend = await this.transactionRepository.getMonthlyInvestmentTransferTrend("SBI証券")
-		const monthlyActuals: Record<string, number> = {}
-		let totalActual = 0
+		const trend = await this.transactionRepository.getMonthlyInvestmentTransferTrend("SBI証券");
+		const monthlyActuals: Record<string, number> = {};
+		let totalActual = 0;
 		for (const entry of trend) {
-			monthlyActuals[entry.month] = entry.total
-			totalActual += entry.total
+			monthlyActuals[entry.month] = entry.total;
+			totalActual += entry.total;
 		}
-		return { label: "投信積立 (SBI証券)", monthlyActuals, totalActual }
+		return { label: "投信積立 (SBI証券)", monthlyActuals, totalActual };
 	}
 
 	private async buildBudgetReport(
 		budgetItems: BudgetItemWithMappings[],
 		monthlyTrend: MonthlyAggregation[],
 	): Promise<BudgetReportRow[]> {
-		const monthCount = monthlyTrend.length
+		const monthCount = monthlyTrend.length;
 
-		const reports: BudgetReportRow[] = []
+		const reports: BudgetReportRow[] = [];
 
 		for (const budgetItem of budgetItems) {
-			const monthlyActuals: Record<string, number> = {}
-			let totalActual = 0
+			const monthlyActuals: Record<string, number> = {};
+			let totalActual = 0;
 
 			for (const mapping of budgetItem.mappings) {
 				const trend = await this.transactionRepository.getMonthlyTrendByCategory(
 					mapping.majorCategory,
 					mapping.minorCategory,
-				)
+				);
 				for (const entry of trend) {
-					monthlyActuals[entry.month] = (monthlyActuals[entry.month] ?? 0) + entry.total
-					totalActual += entry.total
+					monthlyActuals[entry.month] = (monthlyActuals[entry.month] ?? 0) + entry.total;
+					totalActual += entry.total;
 				}
 			}
 
-			const totalBudget = budgetItem.monthlyAmount * monthCount
-			const difference = totalBudget - totalActual
-			const achievementRate = totalBudget > 0 ? (totalActual / totalBudget) * 100 : 0
+			const totalBudget = budgetItem.monthlyAmount * monthCount;
+			const difference = totalBudget - totalActual;
+			const achievementRate = totalBudget > 0 ? (totalActual / totalBudget) * 100 : 0;
 
 			reports.push({
 				budgetItem,
@@ -110,9 +110,9 @@ export class GetDashboardSummaryUsecase {
 				totalBudget,
 				difference,
 				achievementRate,
-			})
+			});
 		}
 
-		return reports
+		return reports;
 	}
 }

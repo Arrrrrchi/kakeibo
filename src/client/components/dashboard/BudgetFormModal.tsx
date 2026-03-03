@@ -1,69 +1,69 @@
-"use client"
+"use client";
 
-import { useRef, useState, useTransition } from "react"
-import { Button } from "@/client/components/ui/Button"
-import { Modal } from "@/client/components/ui/Modal"
-import { useToast } from "@/client/components/ui/Toast"
-import { deleteBudget } from "@/server/actions/delete-budget"
-import { upsertBudget } from "@/server/actions/upsert-budget"
-import type { BudgetItemWithMappings } from "@/types/budget"
+import { useRef, useState, useTransition } from "react";
+import { Button } from "@/client/components/ui/Button";
+import { Modal } from "@/client/components/ui/Modal";
+import { useToast } from "@/client/components/ui/Toast";
+import { deleteBudget } from "@/server/actions/delete-budget";
+import { upsertBudget } from "@/server/actions/upsert-budget";
+import type { BudgetItemWithMappings } from "@/types/budget";
 
 type BudgetFormModalProps = {
-	isOpen: boolean
-	onClose: () => void
-	budgetItem?: BudgetItemWithMappings
-}
+	isOpen: boolean;
+	onClose: () => void;
+	budgetItem?: BudgetItemWithMappings;
+};
 
 const CYCLE_OPTIONS = [
 	{ value: "monthly_fixed", label: "毎月・固定" },
 	{ value: "monthly_variable", label: "毎月・変動" },
 	{ value: "irregular_fixed", label: "不定期・固定" },
 	{ value: "irregular_variable", label: "不定期・変動" },
-]
+];
 
 export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModalProps) {
-	const isEditMode = !!budgetItem
-	const title = isEditMode ? "予算項目の編集" : "予算項目の追加"
-	const formRef = useRef<HTMLFormElement>(null)
-	const [isPending, startTransition] = useTransition()
-	const [error, setError] = useState<string | null>(null)
-	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false)
-	const { showToast } = useToast()
+	const isEditMode = !!budgetItem;
+	const title = isEditMode ? "予算項目の編集" : "予算項目の追加";
+	const formRef = useRef<HTMLFormElement>(null);
+	const [isPending, startTransition] = useTransition();
+	const [error, setError] = useState<string | null>(null);
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const { showToast } = useToast();
 
-	if (!isOpen) return null
+	if (!isOpen) return null;
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-		e.preventDefault()
-		const form = e.currentTarget
+		e.preventDefault();
+		const form = e.currentTarget;
 		if (!form.checkValidity()) {
-			form.reportValidity()
-			return
+			form.reportValidity();
+			return;
 		}
 
-		const formData = new FormData(form)
+		const formData = new FormData(form);
 		startTransition(async () => {
-			const result = await upsertBudget(formData)
+			const result = await upsertBudget(formData);
 			if (result.success) {
-				showToast(isEditMode ? "予算項目を更新しました" : "予算項目を追加しました", "success")
-				onClose()
+				showToast(isEditMode ? "予算項目を更新しました" : "予算項目を追加しました", "success");
+				onClose();
 			} else {
-				setError(result.error)
+				setError(result.error);
 			}
-		})
-	}
+		});
+	};
 
 	const handleDelete = () => {
-		if (!budgetItem) return
+		if (!budgetItem) return;
 		startTransition(async () => {
-			const result = await deleteBudget(budgetItem.id)
+			const result = await deleteBudget(budgetItem.id);
 			if (result.success) {
-				showToast("予算項目を削除しました", "success")
-				onClose()
+				showToast("予算項目を削除しました", "success");
+				onClose();
 			} else {
-				setError(result.error)
+				setError(result.error);
 			}
-		})
-	}
+		});
+	};
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} title={title}>
@@ -166,5 +166,5 @@ export function BudgetFormModal({ isOpen, onClose, budgetItem }: BudgetFormModal
 				</div>
 			</form>
 		</Modal>
-	)
+	);
 }

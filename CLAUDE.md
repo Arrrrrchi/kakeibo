@@ -28,7 +28,7 @@
 ## Coding Conventions
 
 - TypeScript の import は `@/` から始まる絶対パスを使用
-- Biome 設定: タブインデント、セミコロンなし、行幅 100
+- Biome 設定: タブインデント、セミコロンあり、行幅 100
 - 日本語のコメントは最小限にし、コードで意図を表現する
 - コミットメッセージは日本語で、Conventional Commits 形式 (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`)
 - コミットメッセージの末尾にタスク番号を含める（例: `feat: ○○を追加 (1-1, 1-2)`）

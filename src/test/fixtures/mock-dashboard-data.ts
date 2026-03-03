@@ -1,4 +1,4 @@
-import type { DashboardData } from "@/types/dashboard"
+import type { DashboardData } from "@/types/dashboard";
 
 export function createMockDashboardData(overrides?: Partial<DashboardData>): DashboardData {
 	return {
@@ -24,5 +24,5 @@ export function createMockDashboardData(overrides?: Partial<DashboardData>): Das
 		budgetReport: [],
 		investmentRow: { label: "投信積立 (SBI証券)", monthlyActuals: {}, totalActual: 0 },
 		...overrides,
-	}
+	};
 }

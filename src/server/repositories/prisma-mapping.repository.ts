@@ -1,14 +1,14 @@
-import "server-only"
+import "server-only";
 
-import { prisma } from "@/server/lib/prisma"
-import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface"
-import type { BudgetCategoryMapping } from "@/types/budget"
+import { prisma } from "@/server/lib/prisma";
+import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface";
+import type { BudgetCategoryMapping } from "@/types/budget";
 
 export class PrismaMappingRepository implements IMappingRepository {
 	async findByBudgetItemId(budgetItemId: string): Promise<BudgetCategoryMapping[]> {
 		return prisma.budgetCategoryMapping.findMany({
 			where: { budgetItemId },
-		})
+		});
 	}
 
 	async replaceAll(
@@ -28,7 +28,7 @@ export class PrismaMappingRepository implements IMappingRepository {
 					},
 				}),
 			),
-		])
+		]);
 	}
 
 	async findUnmappedCategories(
@@ -36,10 +36,10 @@ export class PrismaMappingRepository implements IMappingRepository {
 	): Promise<{ majorCategory: string; minorCategory: string }[]> {
 		const mappedCategories = await prisma.budgetCategoryMapping.findMany({
 			select: { majorCategory: true, minorCategory: true },
-		})
+		});
 
-		const mappedSet = new Set(mappedCategories.map((m) => `${m.majorCategory}|${m.minorCategory}`))
+		const mappedSet = new Set(mappedCategories.map((m) => `${m.majorCategory}|${m.minorCategory}`));
 
-		return allCategories.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`))
+		return allCategories.filter((c) => !mappedSet.has(`${c.majorCategory}|${c.minorCategory}`));
 	}
 }
