@@ -55,7 +55,9 @@ next-env.d.ts
 
 # Claude Code
 .claude/settings.local.json
+.claude/worktrees/
 .mcp.json
+.playwright-mcp/
 
 # OS generated files
 .DS_Store
