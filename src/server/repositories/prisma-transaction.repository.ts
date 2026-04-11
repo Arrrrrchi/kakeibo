@@ -77,6 +77,24 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 		});
 	}
 
+	async findByCategoryAndMonth(
+		majorCategory: string,
+		minorCategory: string,
+		month: string,
+	): Promise<Transaction[]> {
+		const [year, mon] = month.split("-").map(Number);
+		const start = new Date(year, mon - 1, 1);
+		const end = new Date(year, mon, 1);
+		return prisma.transaction.findMany({
+			where: {
+				majorCategory,
+				minorCategory,
+				date: { gte: start, lt: end },
+			},
+			orderBy: { date: "desc" },
+		});
+	}
+
 	async getDistinctCategories(): Promise<{ majorCategory: string; minorCategory: string }[]> {
 		const results = await prisma.$queryRaw<{ major_category: string; minor_category: string }[]>`
 			SELECT DISTINCT major_category, minor_category
