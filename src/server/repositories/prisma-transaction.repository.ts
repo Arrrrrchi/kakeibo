@@ -82,17 +82,18 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 		minorCategory: string,
 		month: string,
 	): Promise<Transaction[]> {
-		const [year, mon] = month.split("-").map(Number);
-		const start = new Date(year, mon - 1, 1);
-		const end = new Date(year, mon, 1);
-		return prisma.transaction.findMany({
-			where: {
-				majorCategory,
-				minorCategory,
-				date: { gte: start, lt: end },
-			},
-			orderBy: { date: "desc" },
-		});
+		return prisma.$queryRaw<Transaction[]>`
+			SELECT id, date, description, amount, major_category AS "majorCategory",
+				minor_category AS "minorCategory", institution, memo,
+				moneyforward_id AS "moneyforwardId", is_income AS "isIncome",
+				is_transfer AS "isTransfer", import_hash AS "importHash",
+				created_at AS "createdAt", updated_at AS "updatedAt"
+			FROM transactions
+			WHERE major_category = ${majorCategory}
+				AND minor_category = ${minorCategory}
+				AND to_char(date, 'YYYY-MM') = ${month}
+			ORDER BY date DESC
+		`;
 	}
 
 	async getDistinctCategories(): Promise<{ majorCategory: string; minorCategory: string }[]> {
