@@ -1,88 +1,41 @@
 # Kakeibo - 家計分析ダッシュボード
 
-## Project Overview
-
-マネーフォワード Me の CSV データをもとに家計の支出を予算と比較・分析するダッシュボードアプリケーション。
-
-## Tech Stack
-
-- **Framework**: Next.js 16 (App Router)
-- **UI**: React 19 + TypeScript 5 (strict mode)
-- **Styling**: Tailwind CSS v4 (`@import "tailwindcss"` 方式)
-- **ORM**: Prisma + PostgreSQL
-- **Charts**: Recharts
-- **Package Manager**: pnpm
-- **Linter/Formatter**: Biome (ESLint は使わない)
-- **Test**: Vitest + React Testing Library
-- **Node.js**: v22
+@package.json
 
 ## Architecture
 
-- サーバーコンポーネントを優先し、`"use client"` はクライアント側の必然性がある場合のみ使用
-- サーバーコンポーネントからのデータ取得は `src/server/loaders/` に切り出す
-- サーバー側で動作する処理には `import "server-only"` を記述する
-- サーバーアクション (`"use server"`) は副作用を伴う操作のためだけに使い、`revalidatePath` を 1 セットで行う
-- リポジトリパターン: インターフェース (`src/server/repositories/interfaces/`) + Prisma 実装
-- ユースケース (`src/server/usecases/`) でビジネスロジックを分離
-
-## Coding Conventions
-
-- TypeScript の import は `@/` から始まる絶対パスを使用
-- Biome 設定: タブインデント、セミコロンあり、行幅 100
-- 日本語のコメントは最小限にし、コードで意図を表現する
-- コミットメッセージは日本語で、Conventional Commits 形式 (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`)
-- コミットメッセージの末尾にタスク番号を含める（例: `feat: ○○を追加 (1-1, 1-2)`）
-- コミットメッセージに `Co-Authored-By` は付けない
-- タスクごとにコミットする（複数タスクをまとめてコミットしない）
-- PR 作成時は `.github/pull_request_template.md` のフォーマットに従う
-
-## TDD
-
-- **テスト駆動開発** を採用: テストを先に書く → 実装 → リファクタリング
-- テストファイルはソースと同じディレクトリに配置 (コロケーション方式)
-  - `csv-parser.ts` → `csv-parser.test.ts`
-  - `Button.tsx` → `Button.test.tsx`
-- テストフレームワーク: Vitest (`pnpm test`)
-- ユースケースのテストではリポジトリをモックする (`src/test/helpers/mock-repositories.ts`)
-- UI コンポーネントは React Testing Library でテスト
-
-## Directory Structure
-
-```
-src/
-├── app/              # Next.js App Router pages
-├── client/           # クライアントサイドコード
-│   ├── components/   # React コンポーネント
-│   └── lib/          # クライアントユーティリティ
-├── server/           # サーバーサイドコード
-│   ├── actions/      # Server Actions ("use server")
-│   ├── lib/          # サーバーユーティリティ (Prisma, CSV parser)
-│   ├── loaders/      # データローダー (server-only)
-│   ├── repositories/ # リポジトリ (interfaces/ + Prisma 実装)
-│   └── usecases/     # ビジネスロジック
-├── test/             # テストヘルパー・フィクスチャ
-└── types/            # 型定義
-```
+サーバーコンポーネントをデフォルトとする。データ取得は `src/server/loaders/` に切り出し (`import "server-only"` 必須)。ビジネスロジックは `src/server/usecases/`。DB アクセスは必ず `src/server/repositories/interfaces/` 経由 — ユースケースやアクションから Prisma を直接使わない。`"use client"` はリーフコンポーネントにのみ付与する。
 
 ## Commands
 
-```bash
-pnpm dev          # 開発サーバー起動
-pnpm build        # プロダクションビルド
-pnpm test         # テスト実行 (watch mode)
-pnpm test:run     # テスト実行 (single run)
-pnpm lint         # Biome lint
-pnpm lint:fix     # Biome lint + 自動修正
-```
+| Task | Command |
+|------|---------|
+| Dev | `pnpm dev` |
+| Test (watch) | `pnpm test` |
+| Test (CI) | `pnpm test:run` |
+| Lint | `pnpm lint` |
+| Lint + fix | `pnpm lint:fix` |
 
-## Phase 完了時のルール
+## Constraints
 
-各 Phase の実装が完了したら、PR 作成前に以下を行う:
+- Do NOT use relative imports — use `@/` absolute paths
+- Do NOT add `"use client"` to parent/wrapper components — push it to leaf nodes
+- Do NOT access Prisma from usecases or actions — always go through repository interfaces
+- Do NOT skip `revalidatePath()` when writing a Server Action with side effects
 
-1. **計画書の実態反映**: 該当 Phase の `docs/mvp/phaseN_*.md` を実際の実装と見比べ、差分があれば計画書を実態に合わせて修正する（コマンド、設定、コード例、成果物テーブル、完了条件のチェック状態など）
-2. **他 Phase への影響確認**: 技術スタックやツールバージョンの変更があった場合、後続 Phase のドキュメントに矛盾が生じていないか確認し、必要なら修正する
+## Commit Format
+
+日本語、Conventional Commits 形式: `feat: ○○を追加 (1-1, 1-2)`  
+Valid types: `feat` `fix` `docs` `test` `refactor` `chore` `ci`  
+末尾にタスク番号を付ける。`Co-Authored-By` は付けない。タスクごとに個別コミット。
+
+## Phase Completion
+
+Phase 完了時は PR 作成前に:
+1. `docs/mvp/phaseN_*.md` を実際の実装に合わせて更新する
+2. 技術スタックの変更が後続 Phase ドキュメントに影響しないか確認する
 
 ## Key Design Docs
 
-- `docs/20260228_1359_家計分析ダッシュボードアプリケーション設計.md` - 全体設計
-- `docs/mvp/phase1_プロジェクト基盤.md` 〜 `docs/mvp/phase6_仕上げ.md` - MVP 実装計画
+- `docs/20260228_1359_家計分析ダッシュボードアプリケーション設計.md`
+- `docs/mvp/phase1_*.md` 〜 `docs/mvp/phase6_*.md`
