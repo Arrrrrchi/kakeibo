@@ -4,6 +4,7 @@ import { Fragment, useState } from "react";
 import { BudgetItemMonthDetailModal } from "@/client/components/dashboard/BudgetItemMonthDetailModal";
 import { formatCurrency, formatMonth } from "@/client/lib/format";
 import type { CycleType } from "@/generated/prisma/enums";
+import type { CategoryMapping } from "@/types/budget";
 import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard";
 
 type ReportPanelProps = {
@@ -14,7 +15,7 @@ type ReportPanelProps = {
 
 type ModalState = {
 	budgetItemName: string;
-	mappings: { majorCategory: string; minorCategory: string }[];
+	mappings: CategoryMapping[];
 	month: string;
 } | null;
 
@@ -219,7 +220,6 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 					budgetItemName={modal.budgetItemName}
 					mappings={modal.mappings}
 					month={modal.month}
-					isOpen={true}
 					onClose={() => setModal(null)}
 				/>
 			)}

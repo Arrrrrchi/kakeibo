@@ -15,3 +15,5 @@ export type BudgetFormData = {
 	monthlyAmount: number;
 	cycleType: CycleType;
 };
+
+export type CategoryMapping = Pick<BudgetCategoryMapping, "majorCategory" | "minorCategory">;

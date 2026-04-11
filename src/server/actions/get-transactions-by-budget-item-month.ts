@@ -2,9 +2,8 @@
 
 import { PrismaTransactionRepository } from "@/server/repositories/prisma-transaction.repository";
 import type { ActionResult } from "@/types/action";
+import type { CategoryMapping } from "@/types/budget";
 import type { Transaction } from "@/types/transaction";
-
-type CategoryMapping = { majorCategory: string; minorCategory: string };
 
 export async function getTransactionsByBudgetItemMonth(
 	mappings: CategoryMapping[],

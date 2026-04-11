@@ -4,15 +4,13 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/client/components/ui/Modal";
 import { formatCurrency, formatMonth } from "@/client/lib/format";
 import { getTransactionsByBudgetItemMonth } from "@/server/actions/get-transactions-by-budget-item-month";
+import type { CategoryMapping } from "@/types/budget";
 import type { Transaction } from "@/types/transaction";
-
-type CategoryMapping = { majorCategory: string; minorCategory: string };
 
 type BudgetItemMonthDetailModalProps = {
 	budgetItemName: string;
 	mappings: CategoryMapping[];
 	month: string;
-	isOpen: boolean;
 	onClose: () => void;
 };
 
@@ -20,34 +18,36 @@ export function BudgetItemMonthDetailModal({
 	budgetItemName,
 	mappings,
 	month,
-	isOpen,
 	onClose,
 }: BudgetItemMonthDetailModalProps) {
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const [loading, setLoading] = useState(false);
+	const [error, setError] = useState<string | null>(null);
 
 	useEffect(() => {
-		if (!isOpen) return;
 		setLoading(true);
+		setError(null);
 		getTransactionsByBudgetItemMonth(mappings, month)
 			.then((result) => {
 				if (result.success) {
 					setTransactions(result.data);
+				} else {
+					setError(result.error);
 				}
 			})
 			.finally(() => setLoading(false));
-	}, [isOpen, mappings, month]);
-
-	if (!isOpen) return null;
+	}, [mappings, month]);
 
 	const total = transactions.reduce((sum, t) => sum + t.amount, 0);
 
 	return (
-		<Modal isOpen={isOpen} onClose={onClose} title={`${budgetItemName} — ${formatMonth(month)}`}>
+		<Modal isOpen={true} onClose={onClose} title={`${budgetItemName} — ${formatMonth(month)}`}>
 			{loading ? (
 				<div className="flex items-center justify-center py-8">
 					<div className="text-gray-400 text-sm">読み込み中...</div>
 				</div>
+			) : error ? (
+				<div className="py-8 text-center text-red-500 text-sm">{error}</div>
 			) : transactions.length === 0 ? (
 				<div className="py-8 text-center text-gray-400 text-sm">取引がありません</div>
 			) : (
