@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseDateRange } from "@/server/lib/date-range";
+import { parseDateRange, toEndDateExclusive, toStartDate } from "@/server/lib/date-range";
 
 describe("parseDateRange", () => {
 	describe("正常系", () => {
@@ -103,5 +103,37 @@ describe("parseDateRange", () => {
 			});
 			expect(result).toBeUndefined();
 		});
+	});
+});
+
+describe("toStartDate", () => {
+	it("YYYY-MM を YYYY-MM-01 に変換する", () => {
+		expect(toStartDate("2024-01")).toBe("2024-01-01");
+	});
+
+	it("月の末尾が 2 桁の場合も正しく変換する", () => {
+		expect(toStartDate("2024-12")).toBe("2024-12-01");
+	});
+
+	it("任意の月を月初日に変換する", () => {
+		expect(toStartDate("2023-06")).toBe("2023-06-01");
+	});
+});
+
+describe("toEndDateExclusive", () => {
+	it("通常の月は翌月の 01 日を返す", () => {
+		expect(toEndDateExclusive("2024-01")).toBe("2024-02-01");
+	});
+
+	it("11月は同年12月の 01 日を返す", () => {
+		expect(toEndDateExclusive("2024-11")).toBe("2024-12-01");
+	});
+
+	it("12月は翌年 1 月の 01 日を返す（年跨ぎ）", () => {
+		expect(toEndDateExclusive("2024-12")).toBe("2025-01-01");
+	});
+
+	it("翌月の月が 1 桁の場合はゼロ埋めする", () => {
+		expect(toEndDateExclusive("2024-09")).toBe("2024-10-01");
 	});
 });

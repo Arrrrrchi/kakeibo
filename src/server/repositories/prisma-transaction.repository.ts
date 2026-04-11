@@ -1,6 +1,7 @@
 import "server-only";
 
 import { Prisma } from "@/generated/prisma/client";
+import { toEndDateExclusive, toStartDate } from "@/server/lib/date-range";
 import { prisma } from "@/server/lib/prisma";
 import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface";
 import type { DateRange } from "@/types/dashboard";
@@ -18,7 +19,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 	 */
 	private buildDateRangeFilter(dateRange?: DateRange): Prisma.Sql {
 		if (!dateRange) return Prisma.empty;
-		return Prisma.sql`AND date >= ${`${dateRange.from}-01`}::date AND date < (${`${dateRange.to}-01`}::date + interval '1 month')`;
+		return Prisma.sql`AND date >= ${toStartDate(dateRange.from)}::date AND date < ${toEndDateExclusive(dateRange.to)}::date`;
 	}
 
 	async upsertMany(transactions: TransactionCreateInput[]): Promise<number> {
