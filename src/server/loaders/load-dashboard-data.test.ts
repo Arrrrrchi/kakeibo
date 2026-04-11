@@ -1,5 +1,6 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import { loadDashboardData } from "@/server/loaders/load-dashboard-data";
+import type { DateRange } from "@/types/dashboard";
 
 const mockExecute = vi.fn();
 
@@ -22,6 +23,8 @@ vi.mock("@/server/usecases/get-dashboard-summary.usecase", () => ({
 }));
 
 describe("loadDashboardData", () => {
+	beforeEach(() => vi.clearAllMocks());
+
 	it("ユースケースの execute を呼び出してデータを返す", async () => {
 		const mockData = {
 			kpiSummary: {
@@ -43,5 +46,22 @@ describe("loadDashboardData", () => {
 
 		expect(mockExecute).toHaveBeenCalled();
 		expect(result).toEqual(mockData);
+	});
+
+	it("dateRange を渡すと usecase.execute(dateRange) に伝播する", async () => {
+		const dateRange: DateRange = { from: "2024-01", to: "2024-12" };
+		mockExecute.mockResolvedValue({});
+
+		await loadDashboardData(dateRange);
+
+		expect(mockExecute).toHaveBeenCalledWith(dateRange);
+	});
+
+	it("dateRange 未指定時は usecase.execute(undefined) が呼ばれる", async () => {
+		mockExecute.mockResolvedValue({});
+
+		await loadDashboardData();
+
+		expect(mockExecute).toHaveBeenCalledWith(undefined);
 	});
 });

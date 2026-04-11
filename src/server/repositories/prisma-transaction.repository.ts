@@ -1,7 +1,10 @@
 import "server-only";
 
+import { Prisma } from "@/generated/prisma/client";
+import { toEndDateExclusive, toStartDate } from "@/server/lib/date-range";
 import { prisma } from "@/server/lib/prisma";
 import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface";
+import type { DateRange } from "@/types/dashboard";
 import type {
 	CategoryBreakdown,
 	MonthlyAggregation,
@@ -10,6 +13,15 @@ import type {
 } from "@/types/transaction";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
+	/**
+	 * dateRange が指定された場合に AND 句の SQL 断片を返す。
+	 * from / to のフォーマット（YYYY-MM）は parseDateRange で保証済み。
+	 */
+	private buildDateRangeFilter(dateRange?: DateRange): Prisma.Sql {
+		if (!dateRange) return Prisma.empty;
+		return Prisma.sql`AND date >= ${toStartDate(dateRange.from)}::date AND date < ${toEndDateExclusive(dateRange.to)}::date`;
+	}
+
 	async upsertMany(transactions: TransactionCreateInput[]): Promise<number> {
 		if (transactions.length === 0) return 0;
 
@@ -21,7 +33,8 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 		return result.count;
 	}
 
-	async getMonthlyAggregation(): Promise<MonthlyAggregation[]> {
+	async getMonthlyAggregation(dateRange?: DateRange): Promise<MonthlyAggregation[]> {
+		const dateFilter = this.buildDateRangeFilter(dateRange);
 		const results = await prisma.$queryRaw<
 			{ month: string; total_income: bigint; total_expense: bigint }[]
 		>`
@@ -31,6 +44,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 				COALESCE(SUM(CASE WHEN is_income = false THEN amount ELSE 0 END), 0) AS total_expense
 			FROM transactions
 			WHERE is_transfer = false
+			${dateFilter}
 			GROUP BY to_char(date, 'YYYY-MM')
 			ORDER BY month
 		`;
@@ -42,7 +56,8 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 		}));
 	}
 
-	async getCategoryBreakdown(): Promise<CategoryBreakdown[]> {
+	async getCategoryBreakdown(dateRange?: DateRange): Promise<CategoryBreakdown[]> {
+		const dateFilter = this.buildDateRangeFilter(dateRange);
 		const results = await prisma.$queryRaw<
 			{
 				major_category: string;
@@ -58,6 +73,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 				COUNT(*) AS count
 			FROM transactions
 			WHERE is_income = false AND is_transfer = false
+			${dateFilter}
 			GROUP BY major_category, minor_category
 			ORDER BY total DESC
 		`;
@@ -113,7 +129,9 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 	async getMonthlyTrendByCategory(
 		majorCategory: string,
 		minorCategory: string,
+		dateRange?: DateRange,
 	): Promise<{ month: string; total: number }[]> {
+		const dateFilter = this.buildDateRangeFilter(dateRange);
 		const results = await prisma.$queryRaw<{ month: string; total: bigint }[]>`
 			SELECT
 				to_char(date, 'YYYY-MM') AS month,
@@ -121,6 +139,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 			FROM transactions
 			WHERE major_category = ${majorCategory}
 				AND minor_category = ${minorCategory}
+			${dateFilter}
 			GROUP BY to_char(date, 'YYYY-MM')
 			ORDER BY month
 		`;
@@ -133,8 +152,10 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 
 	async getMonthlyInvestmentTransferTrend(
 		descriptionPrefix: string,
+		dateRange?: DateRange,
 	): Promise<{ month: string; total: number }[]> {
 		const pattern = `${descriptionPrefix}%`;
+		const dateFilter = this.buildDateRangeFilter(dateRange);
 		const results = await prisma.$queryRaw<{ month: string; total: bigint }[]>`
 			SELECT
 				to_char(date, 'YYYY-MM') AS month,
@@ -142,6 +163,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 			FROM transactions
 			WHERE is_transfer = true
 				AND description LIKE ${pattern}
+			${dateFilter}
 			GROUP BY to_char(date, 'YYYY-MM')
 			ORDER BY month
 		`;

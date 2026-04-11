@@ -1,6 +1,11 @@
 import type { BudgetItemWithMappings } from "@/types/budget";
 import type { CategoryBreakdown, MonthlyAggregation } from "@/types/transaction";
 
+export type DateRange = {
+	from: string; // "YYYY-MM"
+	to: string; // "YYYY-MM"（from 以上）
+};
+
 export type KpiSummary = {
 	totalIncome: number;
 	totalExpense: number;
