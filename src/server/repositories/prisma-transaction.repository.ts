@@ -77,6 +77,25 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 		});
 	}
 
+	async findByCategoryAndMonth(
+		majorCategory: string,
+		minorCategory: string,
+		month: string,
+	): Promise<Transaction[]> {
+		return prisma.$queryRaw<Transaction[]>`
+			SELECT id, date, description, amount, major_category AS "majorCategory",
+				minor_category AS "minorCategory", institution, memo,
+				moneyforward_id AS "moneyforwardId", is_income AS "isIncome",
+				is_transfer AS "isTransfer", import_hash AS "importHash",
+				created_at AS "createdAt", updated_at AS "updatedAt"
+			FROM transactions
+			WHERE major_category = ${majorCategory}
+				AND minor_category = ${minorCategory}
+				AND to_char(date, 'YYYY-MM') = ${month}
+			ORDER BY date DESC
+		`;
+	}
+
 	async getDistinctCategories(): Promise<{ majorCategory: string; minorCategory: string }[]> {
 		const results = await prisma.$queryRaw<{ major_category: string; minor_category: string }[]>`
 			SELECT DISTINCT major_category, minor_category

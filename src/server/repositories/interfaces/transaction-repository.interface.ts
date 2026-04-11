@@ -10,6 +10,11 @@ export type ITransactionRepository = {
 	getMonthlyAggregation(): Promise<MonthlyAggregation[]>;
 	getCategoryBreakdown(): Promise<CategoryBreakdown[]>;
 	findByCategory(majorCategory: string, minorCategory: string): Promise<Transaction[]>;
+	findByCategoryAndMonth(
+		majorCategory: string,
+		minorCategory: string,
+		month: string,
+	): Promise<Transaction[]>;
 	getDistinctCategories(): Promise<{ majorCategory: string; minorCategory: string }[]>;
 	getMonthlyTrendByCategory(
 		majorCategory: string,

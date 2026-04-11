@@ -1,6 +1,10 @@
-import { Fragment } from "react";
+"use client";
+
+import { Fragment, useState } from "react";
+import { BudgetItemMonthDetailModal } from "@/client/components/dashboard/BudgetItemMonthDetailModal";
 import { formatCurrency, formatMonth } from "@/client/lib/format";
 import type { CycleType } from "@/generated/prisma/enums";
+import type { CategoryMapping } from "@/types/budget";
 import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard";
 
 type ReportPanelProps = {
@@ -8,6 +12,12 @@ type ReportPanelProps = {
 	months: string[];
 	investmentRow: InvestmentRow;
 };
+
+type ModalState = {
+	budgetItemName: string;
+	mappings: CategoryMapping[];
+	month: string;
+} | null;
 
 const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 	{ key: "monthly_fixed", label: "毎月・固定" },
@@ -17,6 +27,8 @@ const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 ];
 
 export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanelProps) {
+	const [modal, setModal] = useState<ModalState>(null);
+
 	if (budgetReport.length === 0) {
 		return (
 			<div className="bg-white rounded-xl p-8 shadow-sm text-center text-gray-400">
@@ -106,7 +118,26 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 										</td>
 										{months.map((m) => (
 											<td key={m} className="px-4 py-3 text-right whitespace-nowrap">
-												{row.monthlyActuals[m] ? formatCurrency(row.monthlyActuals[m]) : "-"}
+												{row.monthlyActuals[m] ? (
+													<button
+														type="button"
+														className="hover:underline cursor-pointer"
+														onClick={() =>
+															setModal({
+																budgetItemName: row.budgetItem.name,
+																mappings: row.budgetItem.mappings.map((mp) => ({
+																	majorCategory: mp.majorCategory,
+																	minorCategory: mp.minorCategory,
+																})),
+																month: m,
+															})
+														}
+													>
+														{formatCurrency(row.monthlyActuals[m])}
+													</button>
+												) : (
+													"-"
+												)}
 											</td>
 										))}
 										<td className="px-4 py-3 text-right font-medium whitespace-nowrap">
@@ -183,6 +214,15 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 					</tbody>
 				</table>
 			</div>
+
+			{modal && (
+				<BudgetItemMonthDetailModal
+					budgetItemName={modal.budgetItemName}
+					mappings={modal.mappings}
+					month={modal.month}
+					onClose={() => setModal(null)}
+				/>
+			)}
 		</div>
 	);
 }
