@@ -1,10 +1,11 @@
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 import {
 	createMockBudgetRepository,
 	createMockMappingRepository,
 	createMockTransactionRepository,
 } from "@/test/helpers/mock-repositories";
 import type { BudgetItemWithMappings } from "@/types/budget";
+import type { DateRange } from "@/types/dashboard";
 import { GetDashboardSummaryUsecase } from "./get-dashboard-summary.usecase";
 
 function createUsecase() {
@@ -16,6 +17,7 @@ function createUsecase() {
 }
 
 describe("GetDashboardSummaryUsecase", () => {
+	beforeEach(() => vi.clearAllMocks());
 	it("KPI サマリーを正しく計算する", async () => {
 		const { usecase, transactionRepo, budgetRepo } = createUsecase();
 		vi.mocked(transactionRepo.getMonthlyAggregation).mockResolvedValue([
@@ -155,5 +157,90 @@ describe("GetDashboardSummaryUsecase", () => {
 		expect(row.difference).toBe(2000);
 		// 達成率: (実績 / 予算) * 100 = 90
 		expect(row.achievementRate).toBe(90);
+	});
+
+	it("dateRangeを渡すと全リポジトリメソッドに伝播する", async () => {
+		const { usecase, transactionRepo, budgetRepo } = createUsecase();
+		const dateRange: DateRange = { from: "2024-01", to: "2024-12" };
+
+		vi.mocked(transactionRepo.getMonthlyAggregation).mockResolvedValue([
+			{ month: "2024-01", totalIncome: 300000, totalExpense: 200000 },
+		]);
+		vi.mocked(transactionRepo.getCategoryBreakdown).mockResolvedValue([]);
+
+		const budgetItem: BudgetItemWithMappings = {
+			id: "1",
+			name: "電気代",
+			monthlyAmount: 10000,
+			cycleType: "monthly_fixed",
+			sortOrder: 100,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			mappings: [
+				{
+					id: "m1",
+					budgetItemId: "1",
+					majorCategory: "水道・光熱費",
+					minorCategory: "電気代",
+					createdAt: new Date(),
+				},
+			],
+		};
+		vi.mocked(budgetRepo.findAllWithMappings).mockResolvedValue([budgetItem]);
+
+		await usecase.execute(dateRange);
+
+		expect(transactionRepo.getMonthlyAggregation).toHaveBeenCalledWith(dateRange);
+		expect(transactionRepo.getCategoryBreakdown).toHaveBeenCalledWith(dateRange);
+		expect(transactionRepo.getMonthlyTrendByCategory).toHaveBeenCalledWith(
+			"水道・光熱費",
+			"電気代",
+			dateRange,
+		);
+		expect(transactionRepo.getMonthlyInvestmentTransferTrend).toHaveBeenCalledWith(
+			"SBI証券",
+			dateRange,
+		);
+	});
+
+	it("dateRangeを渡さない場合は全リポジトリメソッドにundefinedが渡される", async () => {
+		const { usecase, transactionRepo, budgetRepo } = createUsecase();
+
+		vi.mocked(transactionRepo.getMonthlyAggregation).mockResolvedValue([]);
+		vi.mocked(transactionRepo.getCategoryBreakdown).mockResolvedValue([]);
+
+		const budgetItem: BudgetItemWithMappings = {
+			id: "1",
+			name: "電気代",
+			monthlyAmount: 10000,
+			cycleType: "monthly_fixed",
+			sortOrder: 100,
+			createdAt: new Date(),
+			updatedAt: new Date(),
+			mappings: [
+				{
+					id: "m1",
+					budgetItemId: "1",
+					majorCategory: "水道・光熱費",
+					minorCategory: "電気代",
+					createdAt: new Date(),
+				},
+			],
+		};
+		vi.mocked(budgetRepo.findAllWithMappings).mockResolvedValue([budgetItem]);
+
+		await usecase.execute();
+
+		expect(transactionRepo.getMonthlyAggregation).toHaveBeenCalledWith(undefined);
+		expect(transactionRepo.getCategoryBreakdown).toHaveBeenCalledWith(undefined);
+		expect(transactionRepo.getMonthlyTrendByCategory).toHaveBeenCalledWith(
+			"水道・光熱費",
+			"電気代",
+			undefined,
+		);
+		expect(transactionRepo.getMonthlyInvestmentTransferTrend).toHaveBeenCalledWith(
+			"SBI証券",
+			undefined,
+		);
 	});
 });
