@@ -1,3 +1,10 @@
+---
+paths:
+  - "**/*.test.ts"
+  - "**/*.test.tsx"
+  - "src/test/**"
+---
+
 # Testing Rules (TDD with Vitest)
 
 ## TDD Cycle

@@ -1,3 +1,9 @@
+---
+paths:
+  - "prisma/**"
+  - "src/server/repositories/**"
+---
+
 # Prisma Rules
 
 ## Schema
