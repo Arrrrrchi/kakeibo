@@ -4,13 +4,13 @@ import { PrismaBudgetRepository } from "@/server/repositories/prisma-budget.repo
 import { PrismaMappingRepository } from "@/server/repositories/prisma-mapping.repository";
 import { PrismaTransactionRepository } from "@/server/repositories/prisma-transaction.repository";
 import { GetDashboardSummaryUsecase } from "@/server/usecases/get-dashboard-summary.usecase";
-import type { DashboardData } from "@/types/dashboard";
+import type { DashboardData, DateRange } from "@/types/dashboard";
 
-export async function loadDashboardData(): Promise<DashboardData> {
+export async function loadDashboardData(dateRange?: DateRange): Promise<DashboardData> {
 	const usecase = new GetDashboardSummaryUsecase(
 		new PrismaTransactionRepository(),
 		new PrismaBudgetRepository(),
 		new PrismaMappingRepository(),
 	);
-	return usecase.execute();
+	return usecase.execute(dateRange);
 }
