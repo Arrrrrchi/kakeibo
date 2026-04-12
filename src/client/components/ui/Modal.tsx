@@ -43,6 +43,9 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 	useEffect(() => {
 		if (!isOpen) return;
 
+		const previousOverflow = document.body.style.overflow;
+		document.body.style.overflow = "hidden";
+
 		document.addEventListener("keydown", handleKeyDown, true);
 
 		const previousFocus = document.activeElement as HTMLElement | null;
@@ -52,6 +55,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 		focusable?.[0]?.focus();
 
 		return () => {
+			document.body.style.overflow = previousOverflow;
 			document.removeEventListener("keydown", handleKeyDown, true);
 			previousFocus?.focus();
 		};
@@ -72,7 +76,7 @@ export function Modal({ isOpen, onClose, title, children }: ModalProps) {
 				role="dialog"
 				aria-modal="true"
 				aria-label={title}
-				className="bg-white rounded-xl shadow-xl w-[95vw] sm:w-full max-w-lg mx-auto max-h-[90vh] sm:max-h-[80vh] flex flex-col"
+				className="bg-white rounded-xl shadow-xl w-[95vw] max-w-5xl mx-auto max-h-[90vh] flex flex-col"
 				onClick={(e) => e.stopPropagation()}
 				onKeyDown={(e) => e.stopPropagation()}
 			>

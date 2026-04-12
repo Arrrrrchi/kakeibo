@@ -10,6 +10,7 @@ import type {
 	MonthlyAggregation,
 	Transaction,
 	TransactionCreateInput,
+	TransactionUpdateInput,
 } from "@/types/transaction";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
@@ -172,5 +173,13 @@ export class PrismaTransactionRepository implements ITransactionRepository {
 			month: r.month,
 			total: Number(r.total),
 		}));
+	}
+
+	async updateOne(id: string, data: TransactionUpdateInput): Promise<Transaction> {
+		return prisma.transaction.update({ where: { id }, data });
+	}
+
+	async deleteOne(id: string): Promise<void> {
+		await prisma.transaction.delete({ where: { id } });
 	}
 }

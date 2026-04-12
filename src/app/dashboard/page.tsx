@@ -3,6 +3,7 @@ import { DateRangeFilter } from "@/client/components/dashboard/DateRangeFilter";
 import { CsvUploadForm } from "@/client/components/forms/CsvUploadForm";
 import { parseDateRange } from "@/server/lib/date-range";
 import { loadDashboardData } from "@/server/loaders/load-dashboard-data";
+import { loadTransactionCategories } from "@/server/loaders/load-transaction-categories";
 
 export const dynamic = "force-dynamic";
 
@@ -13,7 +14,10 @@ type Props = {
 export default async function DashboardPage({ searchParams }: Props) {
 	const sp = await searchParams;
 	const dateRange = parseDateRange(sp);
-	const data = await loadDashboardData(dateRange);
+	const [data, categoryOptions] = await Promise.all([
+		loadDashboardData(dateRange),
+		loadTransactionCategories(),
+	]);
 
 	return (
 		<div className="p-4 sm:p-6 space-y-6">
@@ -22,7 +26,7 @@ export default async function DashboardPage({ searchParams }: Props) {
 				<CsvUploadForm />
 			</div>
 			<DateRangeFilter initialFrom={dateRange?.from} initialTo={dateRange?.to} />
-			<DashboardTabs dashboardData={data} />
+			<DashboardTabs dashboardData={data} categoryOptions={categoryOptions} />
 		</div>
 	);
 }

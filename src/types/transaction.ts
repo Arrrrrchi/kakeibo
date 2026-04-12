@@ -16,6 +16,11 @@ export type TransactionCreateInput = {
 	importHash: string;
 };
 
+export type TransactionUpdateInput = Pick<
+	TransactionCreateInput,
+	"description" | "amount" | "majorCategory" | "minorCategory" | "memo" | "isTransfer"
+>;
+
 export type MonthlyAggregation = {
 	month: string;
 	totalIncome: number;
@@ -27,4 +32,9 @@ export type CategoryBreakdown = {
 	minorCategory: string;
 	total: number;
 	count: number;
+};
+
+export type TransactionCategoryOption = {
+	majorCategory: string;
+	minorCategory: string;
 };

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import type { DashboardData } from "@/types/dashboard";
+import type { TransactionCategoryOption } from "@/types/transaction";
 import { MappingPanel } from "./MappingPanel";
 import { ReportPanel } from "./ReportPanel";
 import { SummaryPanel } from "./SummaryPanel";
@@ -21,9 +22,10 @@ const tabs: TabConfig[] = [
 
 type DashboardTabsProps = {
 	dashboardData: DashboardData;
+	categoryOptions: TransactionCategoryOption[];
 };
 
-export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
+export function DashboardTabs({ dashboardData, categoryOptions }: DashboardTabsProps) {
 	const [activeTab, setActiveTab] = useState<Tab>("summary");
 
 	return (
@@ -54,6 +56,7 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 						budgetItems={dashboardData.budgetItems}
 						allCategories={dashboardData.categoryBreakdown}
 						unmappedCategories={dashboardData.unmappedCategories}
+						categoryOptions={categoryOptions}
 					/>
 				)}
 				{activeTab === "report" && (
@@ -61,6 +64,7 @@ export function DashboardTabs({ dashboardData }: DashboardTabsProps) {
 						budgetReport={dashboardData.budgetReport}
 						months={dashboardData.monthlyTrend.map((m) => m.month)}
 						investmentRow={dashboardData.investmentRow}
+						categoryOptions={categoryOptions}
 					/>
 				)}
 			</div>
