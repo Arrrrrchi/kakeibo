@@ -32,6 +32,29 @@ export class GetDashboardSummaryUsecase {
 			this.buildInvestmentRow(dateRange),
 		]);
 
+		// TODO: Step 3 で buildOverview() に置き換える
+		const overview = {
+			period: { from: "", to: "", monthCount: 0 },
+			totalIncome: 0,
+			totalExpense: 0,
+			totalInvestment: 0,
+			mappedIncome: 0,
+			unmappedIncome: 0,
+			expenseRate: 0,
+			savingsRate: 0,
+			monthlyAvgIncome: 0,
+			monthlyAvgExpense: 0,
+			byCycleType: {
+				monthly_fixed: 0,
+				monthly_variable: 0,
+				irregular_fixed: 0,
+				irregular_variable: 0,
+				unclassified: 0,
+			},
+			breakdownByBudgetItem: [],
+			breakdownByCycleType: [],
+		};
+
 		return {
 			kpiSummary,
 			monthlyTrend,
@@ -40,6 +63,7 @@ export class GetDashboardSummaryUsecase {
 			unmappedCategories,
 			budgetReport,
 			investmentRow,
+			overview,
 		};
 	}
 
