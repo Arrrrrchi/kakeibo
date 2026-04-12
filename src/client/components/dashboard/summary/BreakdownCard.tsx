@@ -24,7 +24,6 @@ type TabType = "item" | "enemy";
 type Props = {
 	byBudgetItem: BreakdownItem[];
 	byCycleType: BreakdownItem[];
-	totalExpense: number;
 	monthlyAvgExpense: number;
 };
 
@@ -56,12 +55,7 @@ function formatRatioPercent(ratio: number): string {
 	return `${Math.round(ratio * 100)}%`;
 }
 
-export function BreakdownCard({
-	byBudgetItem,
-	byCycleType,
-	totalExpense: _totalExpense,
-	monthlyAvgExpense,
-}: Props) {
+export function BreakdownCard({ byBudgetItem, byCycleType, monthlyAvgExpense }: Props) {
 	const [activeTab, setActiveTab] = useState<TabType>("item");
 
 	const coloredBudgetItems = assignBudgetItemColors(byBudgetItem);

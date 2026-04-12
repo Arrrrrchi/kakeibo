@@ -19,7 +19,6 @@ export function SummaryPanel({ data }: SummaryPanelProps) {
 					<BreakdownCard
 						byBudgetItem={overview.breakdownByBudgetItem}
 						byCycleType={overview.breakdownByCycleType}
-						totalExpense={overview.totalExpense}
 						monthlyAvgExpense={overview.monthlyAvgExpense}
 					/>
 				</div>

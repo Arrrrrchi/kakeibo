@@ -48,7 +48,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -60,7 +59,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -74,7 +72,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -87,7 +84,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -99,7 +95,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -113,7 +108,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -126,7 +120,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -139,7 +132,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -159,7 +151,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={itemsWithUnclassified}
 					byCycleType={byCycleType}
-					totalExpense={170000}
 					monthlyAvgExpense={170000}
 				/>,
 			);
@@ -172,7 +163,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -186,7 +176,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -204,7 +193,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={itemsWithZero}
 					byCycleType={byCycleType}
-					totalExpense={80000}
 					monthlyAvgExpense={80000}
 				/>,
 			);
@@ -220,7 +208,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={itemsWithZeroUnclassified}
 					byCycleType={byCycleType}
-					totalExpense={80000}
 					monthlyAvgExpense={80000}
 				/>,
 			);
@@ -240,7 +227,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -256,7 +242,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -270,7 +255,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -287,7 +271,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -302,7 +285,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -319,7 +301,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={byCycleType}
-					totalExpense={160000}
 					monthlyAvgExpense={160000}
 				/>,
 			);
@@ -331,14 +312,7 @@ describe("BreakdownCard", () => {
 
 	describe("空データ", () => {
 		it("byBudgetItem が空のとき「支出の記録がありません」が表示される", () => {
-			render(
-				<BreakdownCard
-					byBudgetItem={[]}
-					byCycleType={byCycleType}
-					totalExpense={0}
-					monthlyAvgExpense={0}
-				/>,
-			);
+			render(<BreakdownCard byBudgetItem={[]} byCycleType={byCycleType} monthlyAvgExpense={0} />);
 			expect(screen.getByText("支出の記録がありません")).toBeInTheDocument();
 		});
 
@@ -347,12 +321,7 @@ describe("BreakdownCard", () => {
 				{ key: "item-1", label: "家賃", amount: 0, ratio: 0, color: "" },
 			];
 			render(
-				<BreakdownCard
-					byBudgetItem={zeroItems}
-					byCycleType={byCycleType}
-					totalExpense={0}
-					monthlyAvgExpense={0}
-				/>,
+				<BreakdownCard byBudgetItem={zeroItems} byCycleType={byCycleType} monthlyAvgExpense={0} />,
 			);
 			expect(screen.getByText("支出の記録がありません")).toBeInTheDocument();
 		});
@@ -366,7 +335,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={byBudgetItem}
 					byCycleType={zeroCycleType}
-					totalExpense={0}
 					monthlyAvgExpense={0}
 				/>,
 			);
@@ -385,7 +353,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={unsortedItems}
 					byCycleType={byCycleType}
-					totalExpense={100000}
 					monthlyAvgExpense={100000}
 				/>,
 			);
@@ -406,7 +373,6 @@ describe("BreakdownCard", () => {
 				<BreakdownCard
 					byBudgetItem={itemsWithUnclassified}
 					byCycleType={byCycleType}
-					totalExpense={200000}
 					monthlyAvgExpense={200000}
 				/>,
 			);
