@@ -1,3 +1,7 @@
+import type { CycleType } from "@/generated/prisma/enums";
+import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface";
+import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface";
+import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface";
 import {
 	CYCLE_TYPE_ORDER,
 	getCycleTypeColor,
@@ -5,11 +9,7 @@ import {
 	UNCLASSIFIED_COLOR,
 	UNCLASSIFIED_KEY,
 	UNCLASSIFIED_LABEL,
-} from "@/client/lib/cycle-type";
-import type { CycleType } from "@/generated/prisma/enums";
-import type { IBudgetRepository } from "@/server/repositories/interfaces/budget-repository.interface";
-import type { IMappingRepository } from "@/server/repositories/interfaces/mapping-repository.interface";
-import type { ITransactionRepository } from "@/server/repositories/interfaces/transaction-repository.interface";
+} from "@/shared/constants/cycle-type";
 import type { BudgetItemWithMappings } from "@/types/budget";
 import type {
 	BreakdownItem,
@@ -111,8 +111,8 @@ export class GetDashboardSummaryUsecase {
 		const expenseRate = totalIncome > 0 ? totalExpense / totalIncome : 0;
 		const savingsRate =
 			totalIncome > 0 ? (totalIncome - totalExpense - totalInvestment) / totalIncome : 0;
-		const monthlyAvgIncome = monthCount > 0 ? totalIncome / monthCount : 0;
-		const monthlyAvgExpense = monthCount > 0 ? totalExpense / monthCount : 0;
+		const monthlyAvgIncome = monthCount > 0 ? Math.round(totalIncome / monthCount) : 0;
+		const monthlyAvgExpense = monthCount > 0 ? Math.round(totalExpense / monthCount) : 0;
 
 		// (majorCategory, minorCategory) → CycleType のマップを構築
 		const categoryToCycleType = new Map<string, CycleType>();
