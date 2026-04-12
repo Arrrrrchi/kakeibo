@@ -5,13 +5,15 @@ import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recha
 import { Modal } from "@/client/components/ui/Modal";
 import { formatCurrency, formatMonth } from "@/client/lib/format";
 import { getTransactionsByCategory } from "@/server/actions/get-transactions-by-category";
-import type { Transaction } from "@/types/transaction";
+import type { Transaction, TransactionCategoryOption } from "@/types/transaction";
+import { EditableTransactionRow } from "./EditableTransactionRow";
 
 type TransactionDetailModalProps = {
 	majorCategory: string;
 	minorCategory: string;
 	isOpen: boolean;
 	onClose: () => void;
+	categoryOptions: TransactionCategoryOption[];
 };
 
 type MonthlyTrendItem = {
@@ -24,6 +26,7 @@ export function TransactionDetailModal({
 	minorCategory,
 	isOpen,
 	onClose,
+	categoryOptions,
 }: TransactionDetailModalProps) {
 	const [transactions, setTransactions] = useState<Transaction[]>([]);
 	const [monthlyTrend, setMonthlyTrend] = useState<MonthlyTrendItem[]>([]);
@@ -56,6 +59,14 @@ export function TransactionDetailModal({
 		month: formatMonth(m.month),
 		total: m.total,
 	}));
+
+	const handleUpdated = (updated: Transaction) => {
+		setTransactions((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+	};
+
+	const handleDeleted = (id: string) => {
+		setTransactions((prev) => prev.filter((t) => t.id !== id));
+	};
 
 	return (
 		<Modal isOpen={isOpen} onClose={onClose} title={`${majorCategory} / ${minorCategory}`}>
@@ -105,21 +116,21 @@ export function TransactionDetailModal({
 										<th className="text-left py-1 px-2">日付</th>
 										<th className="text-left py-1 px-2">内容</th>
 										<th className="text-right py-1 px-2">金額</th>
-										<th className="text-left py-1 px-2">金融機関</th>
+										<th className="text-left py-1 px-2">カテゴリ</th>
+										<th className="text-left py-1 px-2">メモ</th>
+										<th className="text-left py-1 px-2">振替</th>
+										<th className="text-left py-1 px-2" />
 									</tr>
 								</thead>
 								<tbody>
 									{sortedTransactions.map((t) => (
-										<tr key={t.id} className="border-b hover:bg-gray-50">
-											<td className="py-1 px-2 whitespace-nowrap">
-												{new Date(t.date).toLocaleDateString("ja-JP")}
-											</td>
-											<td className="py-1 px-2">{t.description}</td>
-											<td className="py-1 px-2 text-right whitespace-nowrap">
-												{formatCurrency(t.amount)}
-											</td>
-											<td className="py-1 px-2 text-gray-500">{t.institution ?? "-"}</td>
-										</tr>
+										<EditableTransactionRow
+											key={t.id}
+											transaction={t}
+											categoryOptions={categoryOptions}
+											onUpdated={handleUpdated}
+											onDeleted={handleDeleted}
+										/>
 									))}
 								</tbody>
 							</table>

@@ -25,6 +25,14 @@ vi.mock("@/server/actions/get-transactions-by-category", () => ({
 	})),
 }));
 
+vi.mock("@/server/actions/update-transaction", () => ({
+	updateTransaction: vi.fn(async () => ({ success: true, data: undefined })),
+}));
+
+vi.mock("@/server/actions/delete-transaction", () => ({
+	deleteTransaction: vi.fn(async () => ({ success: true, data: undefined })),
+}));
+
 vi.mock("recharts", () => ({
 	ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 	BarChart: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
@@ -65,6 +73,11 @@ const mockUnmappedCategories: CategoryBreakdown[] = [
 	{ majorCategory: "食費", minorCategory: "外食", total: 20000, count: 10 },
 ];
 
+const mockCategoryOptions = [
+	{ majorCategory: "水道・光熱費", minorCategory: "電気代" },
+	{ majorCategory: "食費", minorCategory: "外食" },
+];
+
 function renderPanel(props: Partial<React.ComponentProps<typeof MappingPanel>> = {}) {
 	return render(
 		<ToastProvider>
@@ -72,6 +85,7 @@ function renderPanel(props: Partial<React.ComponentProps<typeof MappingPanel>> =
 				budgetItems={mockBudgetItems}
 				allCategories={mockCategories}
 				unmappedCategories={mockUnmappedCategories}
+				categoryOptions={mockCategoryOptions}
 				{...props}
 			/>
 		</ToastProvider>,

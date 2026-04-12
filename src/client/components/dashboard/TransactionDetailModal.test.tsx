@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { describe, expect, it, vi } from "vitest";
 import { TransactionDetailModal } from "./TransactionDetailModal";
 
@@ -14,6 +15,7 @@ const mockTransactions = [
 		memo: null,
 		moneyforwardId: null,
 		isIncome: false,
+		isTransfer: false,
 		importHash: "hash1",
 		createdAt: new Date(),
 		updatedAt: new Date(),
@@ -29,6 +31,7 @@ const mockTransactions = [
 		memo: null,
 		moneyforwardId: null,
 		isIncome: false,
+		isTransfer: false,
 		importHash: "hash2",
 		createdAt: new Date(),
 		updatedAt: new Date(),
@@ -40,6 +43,11 @@ const mockMonthlyTrend = [
 	{ month: "2025-05", total: 9200 },
 ];
 
+const mockCategoryOptions = [
+	{ majorCategory: "水道・光熱費", minorCategory: "電気代" },
+	{ majorCategory: "食費", minorCategory: "外食" },
+];
+
 vi.mock("@/server/actions/get-transactions-by-category", () => ({
 	getTransactionsByCategory: vi.fn(async () => ({
 		success: true,
@@ -48,6 +56,17 @@ vi.mock("@/server/actions/get-transactions-by-category", () => ({
 			monthlyTrend: mockMonthlyTrend,
 		},
 	})),
+}));
+
+vi.mock("@/server/actions/update-transaction", () => ({
+	updateTransaction: vi.fn(async (_id: string, input: Record<string, unknown>) => ({
+		success: true,
+		data: { ...mockTransactions[0], ...input },
+	})),
+}));
+
+vi.mock("@/server/actions/delete-transaction", () => ({
+	deleteTransaction: vi.fn(async () => ({ success: true, data: undefined })),
 }));
 
 vi.mock("recharts", () => ({
@@ -71,6 +90,7 @@ describe("TransactionDetailModal", () => {
 				minorCategory="電気代"
 				isOpen={true}
 				onClose={vi.fn()}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.getByText("水道・光熱費 / 電気代")).toBeInTheDocument();
@@ -83,6 +103,7 @@ describe("TransactionDetailModal", () => {
 				minorCategory="電気代"
 				isOpen={true}
 				onClose={vi.fn()}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 
@@ -91,13 +112,14 @@ describe("TransactionDetailModal", () => {
 		});
 	});
 
-	it("取引一覧が表示される", async () => {
+	it("取引一覧が EditableTransactionRow で表示される", async () => {
 		render(
 			<TransactionDetailModal
 				majorCategory="水道・光熱費"
 				minorCategory="電気代"
 				isOpen={true}
 				onClose={vi.fn()}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 
@@ -113,8 +135,35 @@ describe("TransactionDetailModal", () => {
 				minorCategory="電気代"
 				isOpen={false}
 				onClose={vi.fn()}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.queryByText("水道・光熱費 / 電気代")).not.toBeInTheDocument();
+	});
+
+	it("取引削除後にその取引が一覧から消え合計が更新される", async () => {
+		const user = userEvent.setup();
+		window.confirm = vi.fn(() => true);
+
+		render(
+			<TransactionDetailModal
+				majorCategory="水道・光熱費"
+				minorCategory="電気代"
+				isOpen={true}
+				onClose={vi.fn()}
+				categoryOptions={mockCategoryOptions}
+			/>,
+		);
+
+		await waitFor(() => {
+			expect(screen.getAllByText("東京電力")).toHaveLength(2);
+		});
+
+		const deleteButtons = screen.getAllByRole("button", { name: "削除" });
+		await user.click(deleteButtons[0]);
+
+		await waitFor(() => {
+			expect(screen.getAllByText("東京電力")).toHaveLength(1);
+		});
 	});
 });

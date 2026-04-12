@@ -1,7 +1,14 @@
 import { render, screen } from "@testing-library/react";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard";
 import { ReportPanel } from "./ReportPanel";
+
+vi.mock("@/server/actions/update-transaction", () => ({
+	updateTransaction: vi.fn(),
+}));
+vi.mock("@/server/actions/delete-transaction", () => ({
+	deleteTransaction: vi.fn(),
+}));
 
 const mockReportData: BudgetReportRow[] = [
 	{
@@ -52,6 +59,11 @@ const emptyInvestmentRow: InvestmentRow = {
 	totalActual: 0,
 };
 
+const mockCategoryOptions = [
+	{ majorCategory: "食費", minorCategory: "外食" },
+	{ majorCategory: "水道・光熱費", minorCategory: "電気代" },
+];
+
 describe("ReportPanel", () => {
 	it("サマリーバーに予算合計・実績合計が表示される", () => {
 		render(
@@ -59,6 +71,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.getByText(/予算合計/)).toBeInTheDocument();
@@ -71,6 +84,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.getByText("電気代")).toBeInTheDocument();
@@ -83,6 +97,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		const diffCells = screen.getAllByText(/-¥7,000/);
@@ -96,6 +111,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		const diffCells = screen.getAllByText(/¥2,300/);
@@ -104,7 +120,14 @@ describe("ReportPanel", () => {
 	});
 
 	it("データが空の場合にメッセージが表示される", () => {
-		render(<ReportPanel budgetReport={[]} months={[]} investmentRow={emptyInvestmentRow} />);
+		render(
+			<ReportPanel
+				budgetReport={[]}
+				months={[]}
+				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
+			/>,
+		);
 		expect(screen.getByText(/データがありません/)).toBeInTheDocument();
 	});
 
@@ -114,6 +137,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.getByText("毎月・固定")).toBeInTheDocument();
@@ -126,6 +150,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={mockInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.getByText("投信積立 (SBI証券)")).toBeInTheDocument();
@@ -138,6 +163,7 @@ describe("ReportPanel", () => {
 				budgetReport={mockReportData}
 				months={["2025-04", "2025-05"]}
 				investmentRow={emptyInvestmentRow}
+				categoryOptions={mockCategoryOptions}
 			/>,
 		);
 		expect(screen.getByText("投信積立 (SBI証券)")).toBeInTheDocument();

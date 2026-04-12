@@ -13,6 +13,8 @@ export function createMockTransactionRepository(): ITransactionRepository {
 		getDistinctCategories: vi.fn().mockResolvedValue([]),
 		getMonthlyTrendByCategory: vi.fn().mockResolvedValue([]),
 		getMonthlyInvestmentTransferTrend: vi.fn().mockResolvedValue([]),
+		updateOne: vi.fn().mockResolvedValue(undefined),
+		deleteOne: vi.fn().mockResolvedValue(undefined),
 	};
 }
 

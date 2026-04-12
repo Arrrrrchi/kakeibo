@@ -14,6 +14,7 @@ type MappingPanelProps = {
 	budgetItems: BudgetItemWithMappings[];
 	allCategories: CategoryBreakdown[];
 	unmappedCategories: CategoryBreakdown[];
+	categoryOptions: { majorCategory: string; minorCategory: string }[];
 };
 
 function sortByCategory(a: CategoryBreakdown, b: CategoryBreakdown): number {
@@ -33,6 +34,7 @@ export function MappingPanel({
 	budgetItems,
 	allCategories,
 	unmappedCategories,
+	categoryOptions,
 }: MappingPanelProps) {
 	const sortedAllCategories = useMemo(
 		() => [...allCategories].sort(sortByCategory),
@@ -117,6 +119,7 @@ export function MappingPanel({
 					minorCategory={detailCategory.minor}
 					isOpen={true}
 					onClose={() => setDetailCategory(null)}
+					categoryOptions={categoryOptions}
 				/>
 			)}
 		</div>

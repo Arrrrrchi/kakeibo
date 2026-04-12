@@ -6,11 +6,13 @@ import { formatCurrency, formatMonth } from "@/client/lib/format";
 import type { CycleType } from "@/generated/prisma/enums";
 import type { CategoryMapping } from "@/types/budget";
 import type { BudgetReportRow, InvestmentRow } from "@/types/dashboard";
+import type { TransactionCategoryOption } from "@/types/transaction";
 
 type ReportPanelProps = {
 	budgetReport: BudgetReportRow[];
 	months: string[];
 	investmentRow: InvestmentRow;
+	categoryOptions: TransactionCategoryOption[];
 };
 
 type ModalState = {
@@ -26,7 +28,12 @@ const CYCLE_TYPE_ORDER: { key: CycleType; label: string }[] = [
 	{ key: "irregular_variable", label: "不定期・変動" },
 ];
 
-export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanelProps) {
+export function ReportPanel({
+	budgetReport,
+	months,
+	investmentRow,
+	categoryOptions,
+}: ReportPanelProps) {
 	const [modal, setModal] = useState<ModalState>(null);
 
 	if (budgetReport.length === 0) {
@@ -220,6 +227,7 @@ export function ReportPanel({ budgetReport, months, investmentRow }: ReportPanel
 					budgetItemName={modal.budgetItemName}
 					mappings={modal.mappings}
 					month={modal.month}
+					categoryOptions={categoryOptions}
 					onClose={() => setModal(null)}
 				/>
 			)}

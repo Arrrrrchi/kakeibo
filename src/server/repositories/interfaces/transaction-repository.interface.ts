@@ -3,7 +3,9 @@ import type {
 	CategoryBreakdown,
 	MonthlyAggregation,
 	Transaction,
+	TransactionCategoryOption,
 	TransactionCreateInput,
+	TransactionUpdateInput,
 } from "@/types/transaction";
 
 export type ITransactionRepository = {
@@ -16,7 +18,7 @@ export type ITransactionRepository = {
 		minorCategory: string,
 		month: string,
 	): Promise<Transaction[]>;
-	getDistinctCategories(): Promise<{ majorCategory: string; minorCategory: string }[]>;
+	getDistinctCategories(): Promise<TransactionCategoryOption[]>;
 	getMonthlyTrendByCategory(
 		majorCategory: string,
 		minorCategory: string,
@@ -26,4 +28,6 @@ export type ITransactionRepository = {
 		descriptionPrefix: string,
 		dateRange?: DateRange,
 	): Promise<{ month: string; total: number }[]>;
+	updateOne(id: string, data: TransactionUpdateInput): Promise<Transaction>;
+	deleteOne(id: string): Promise<void>;
 };

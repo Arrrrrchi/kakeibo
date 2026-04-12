@@ -9,6 +9,13 @@ vi.mock("@/server/actions/update-mappings", () => ({
 	updateMappings: vi.fn(async () => ({ success: true, data: undefined })),
 }));
 
+vi.mock("@/server/actions/update-transaction", () => ({
+	updateTransaction: vi.fn(),
+}));
+vi.mock("@/server/actions/delete-transaction", () => ({
+	deleteTransaction: vi.fn(),
+}));
+
 vi.mock("@/server/actions/upsert-budget", () => ({
 	upsertBudget: vi.fn(async () => ({ success: true, data: undefined })),
 }));
@@ -39,12 +46,16 @@ vi.mock("recharts", () => ({
 }));
 
 const mockData = createMockDashboardData();
+const mockCategoryOptions = [
+	{ majorCategory: "食費", minorCategory: "外食" },
+	{ majorCategory: "水道・光熱費", minorCategory: "電気代" },
+];
 
 describe("DashboardTabs", () => {
 	it("3つのタブが表示される", () => {
 		render(
 			<ToastProvider>
-				<DashboardTabs dashboardData={mockData} />
+				<DashboardTabs dashboardData={mockData} categoryOptions={mockCategoryOptions} />
 			</ToastProvider>,
 		);
 
@@ -56,7 +67,7 @@ describe("DashboardTabs", () => {
 	it("デフォルトでサマリータブがアクティブ", () => {
 		render(
 			<ToastProvider>
-				<DashboardTabs dashboardData={mockData} />
+				<DashboardTabs dashboardData={mockData} categoryOptions={mockCategoryOptions} />
 			</ToastProvider>,
 		);
 
@@ -68,7 +79,7 @@ describe("DashboardTabs", () => {
 		const user = userEvent.setup();
 		render(
 			<ToastProvider>
-				<DashboardTabs dashboardData={mockData} />
+				<DashboardTabs dashboardData={mockData} categoryOptions={mockCategoryOptions} />
 			</ToastProvider>,
 		);
 
@@ -84,7 +95,7 @@ describe("DashboardTabs", () => {
 	it("サマリータブでサマリーパネルが表示される", () => {
 		render(
 			<ToastProvider>
-				<DashboardTabs dashboardData={mockData} />
+				<DashboardTabs dashboardData={mockData} categoryOptions={mockCategoryOptions} />
 			</ToastProvider>,
 		);
 
